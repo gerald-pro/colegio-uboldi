@@ -2,6 +2,7 @@
 
 require_once('../extensiones/tcpdf/tcpdf.php');
 require_once("../modelos/Curso.php");
+require_once("../modelos/Cuota.php");
 require_once("../modelos/Usuario.php");
 require_once("../modelos/Apoderado.php");
 
@@ -76,7 +77,7 @@ class ReporteControlador
             $pdf->Cell(40, 8, 'Usuario', 1, '', "C");
             $pdf->Cell(18, 8, 'Gestión', 1, '', "C");
             $pdf->Cell(15, 8, 'Curso', 1, '', "C");
-            $pdf->Cell(21, 8, 'Monto (bs)', 1, '', "C");    
+            $pdf->Cell(21, 8, 'Monto (bs)', 1, '', "C");
             $pdf->Ln();
 
 
@@ -87,6 +88,7 @@ class ReporteControlador
                     $apoderado = Apoderado::buscarPorId($pago['id_apoderado']);
                     $usuario = Usuario::buscarPorId($pago['id_usuario']);
                     $curso = Curso::buscarPorId($idCurso);
+                    $cuota = Cuota::listar('id', $pago['id_cuota']);
 
                     $fecha = date_create($pago["fecha"]);
                     $fechaFormateada = date_format($fecha, "d/m/y H:i");
@@ -95,7 +97,7 @@ class ReporteControlador
                     $pdf->Cell(33, 8, $fechaFormateada, 1);
                     $pdf->Cell(40, 8, $apoderado['nombre'] . " " . $apoderado['apellido'], 1, '', 'L');
                     $pdf->Cell(40, 8, $usuario['usuario'], 1, '', 'L');
-                    $pdf->Cell(18, 8, $pago['gestion'], 1, '', 'R');
+                    $pdf->Cell(18, 8, $cuota['gestion'], 1, '', 'R');
                     $pdf->Cell(15, 8, $curso['nombre'] . " " . $curso['paralelo'], 1, '', 'R');
                     $pdf->Cell(21, 8, $pago['monto'], 1, '', 'R');
                     $pdf->Ln();
