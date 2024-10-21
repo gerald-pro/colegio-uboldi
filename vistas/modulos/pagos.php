@@ -1,6 +1,4 @@
-<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -43,8 +41,6 @@
                             <th>Estudiante</th>
                             <th>Tutor</th>
                             <th>Curso</th>
-                            <th>Paralelo</th>
-                            <th>Usuario</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -73,15 +69,12 @@
                                 <td class="text-uppercase">' . $value["monto"] . '</td>
                                 <td class="text-uppercase">' . $estudiante['nombre'] . ' ' . $estudiante['apellidos'] . '</td>
                                 <td class="text-uppercase">' . $apoderado['nombre'] . ' ' . $apoderado['apellido'] . '</td>
-                                <td class="text-uppercase">' . $curso['nombre'] . '</td>
-                                <td class="text-uppercase">' . $curso['paralelo'] . '</td>
-                                <td class="text-uppercase">' . $usuario['usuario'] . '</td>
+                                <td class="text-uppercase">' . $curso['nombre'] . $curso['paralelo'] . '</td>
                                 <td>
                                     <div class="btn-group">
                                     <button class="btn btn-info btnVerPago" id="' . $value["id"] . '" data-toggle="modal" data-target="#modalMostrar"><i class="fa fa-solid fa-eye" style="color: white;"></i></button>' . '
-                                    <button class="btn btn-warning btnEditarPago" id="' . $value["id"] . '" data-toggle="modal" data-target="#modalEditar"><i class="fa fa-solid fa-pen" style="color: white;"></i></button>
-                                    <button class="btn btn-danger btnEliminarPago" id="' . $value["id"] . '"><i class="fa fa-trash" style="color: white;"></i></button>' 
-                                    . '
+                                   <button class="btn btn-danger btnEliminarPago" id="' . $value["id"] . '"><i class="fa fa-trash" style="color: white;"></i></button>'
+                                . '
                                     </div>
                                 </td>
                             </tr>';
@@ -108,7 +101,7 @@
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-md-12 form-group">
+                            <div class="col-md-6 form-group">
                                 <label for="nuevoCpago">Código</label>
                                 <input type="text" class="form-control" id="nuevoCpago" name="nuevoCpago" required>
                             </div>
@@ -131,24 +124,6 @@
                             </div>
 
                             <div class="col-md-6 form-group">
-                                <label for="nuevoMonto">Monto</label>
-                                <input type="number" class="form-control" id="nuevoMonto" name="nuevoMonto" required>
-                            </div>
-
-                            <div class="col-md-6 form-group">
-                                <label for="nuevoIdCurso">Curso</label>
-                                <select name="nuevoIdCurso" id="nuevoIdCurso" class="form-control" required>
-                                    <?php
-                                    $cursos = Curso::listar();
-                                    foreach ($cursos as $key => $value) {
-                                        echo '<option value="' . $value["id"] . '">' . $value["curso"] . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 form-group">
                                 <label for="nuevoIdEstudiante">Estudiante</label>
                                 <select name="nuevoIdEstudiante" id="nuevoIdEstudiante" class="form-control" required>
                                     <option value="">Seleccionar</option>
@@ -163,16 +138,26 @@
 
                             <div class="col-md-6 form-group">
                                 <label for="nuevoIdApoderado">Tutor</label>
-                                <select name="nuevoIdApoderado" id="nuevoIdApoderado" class="form-control" required>
-                                    <option value="">Seleccionar</option>
-                                    <?php
-                                    $apoderados = Apoderado::listar();
-                                    foreach ($apoderados as $key => $value) {
-                                        echo '<option value="' . $value["id"] . '">' . $value["nombre"] . ' ' . $value["apellido"] . '</option>';
-                                    }
-                                    ?>
+                                <input type="text" class="form-control" id="nuevoIdApoderado" name="nuevoIdApoderado" readonly>
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <label for="nuevoIdCuota">Cuota</label>
+                                <select name="nuevoIdCuota" id="nuevoIdCuota" class="form-control" required>
+                                    <option value="">Seleccionar cuota pendiente</option>
                                 </select>
                             </div>
+
+                            <div class="col-md-6 form-group">
+                                <label for="nuevoMonto">Monto</label>
+                                <input type="text" class="form-control" id="nuevoMonto" name="nuevoMonto" readonly>
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <label for="nuevoIdCurso">Curso</label>
+                                <input type="text" class="form-control" id="nuevoIdCurso" name="nuevoIdCurso" readonly>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -183,82 +168,6 @@
                 <?php
                 $registro = new PagoControlador();
                 $registro->crear();
-                ?>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal editar -->
-<div class="modal fade" id="modalEditar">
-    <div class="modal-dialog">
-        <div class="modal-content bg-secondary">
-            <form role="form" method="post">
-                <div class="modal-header">
-                    <h4 class="modal-title">Editar Pago</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <label for="editarCodigo">Codigo Pago</label>
-                                <input type="text" class="form-control" id="editarCodigo" name="editarCodigo" required>
-                            </div>
-
-                            <div class="col-md-6 form-group">
-                                <label for="editarMonto">Monto</label>
-                                <input type="number" class="form-control" id="editarMonto" name="editarMonto" required>
-                                <input type="hidden" name="idPago" id="idPago" required>
-                            </div>
-
-                            <div class="col-md-6 form-group">
-                                <label for="editarIdCurso">Curso</label>
-                                <select name="editarIdCurso" id="editarIdCurso" class="form-control" required>
-                                    <?php
-                                    $cursos = Curso::listar();
-                                    foreach ($cursos as $key => $value) {
-                                        echo '<option value="' . $value["id"] . '">' . $value["curso"] . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label for="editarIdEstudiante">Estudiante</label>
-                                <select name="editarIdEstudiante" id="editarIdEstudiante" class="form-control" required>
-                                    <?php
-                                    $estudiantes = Estudiante::listar();
-                                    foreach ($estudiantes as $key => $value) {
-                                        echo '<option value="' . $value["id"] . '">' . $value["nombre"] . ' ' . $value["apellidos"] . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label for="editarIdApoderado">Tutor</label>
-                                <select name="editarIdApoderado" id="editarIdApoderado" class="form-control" required>
-                                    <?php
-                                    $apoderados = Apoderado::listar();
-                                    foreach ($apoderados as $key => $value) {
-                                        echo '<option value="' . $value["id"] . '">' . $value["nombre"] . ' ' . $value["apellido"] . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-outline-light">Guardar</button>
-                </div>
-                <?php
-                $edicion = new PagoControlador();
-                $edicion->editar();
                 ?>
             </form>
         </div>
@@ -278,11 +187,6 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12 form-group">
-                            <label for="verCpago">Código</label>
-                            <input type="text" class="form-control" id="verCpago" name="verCpago" readonly>
-                        </div>
-
                         <div class="col-md-6 form-group">
                             <label for="verFecha">Fecha</label>
                             <input type="date" class="form-control" id="verFecha" name="verFecha" readonly>
@@ -292,11 +196,10 @@
                             <label for="verHora">Hora</label>
                             <input type="time" class="form-control" id="verHora" name="verHora" readonly>
                         </div>
-                    </div>
-                    <div class="row">
+
                         <div class="col-md-6 form-group">
                             <label for="verMonto">Monto</label>
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">Bs</span>
                                 </div>
@@ -349,7 +252,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-light btnVerDetallePago" data-toggle="modal" data-target="#modalDetallePago">Ver Detalle</button>
+                <button type="button" class="btn btn-light btnVerDetallePago" data-toggle="modal" data-target="#modalDetallePago">Comprobante</button>
             </div>
         </div>
     </div>
@@ -359,7 +262,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-secondary">
             <div class="modal-header">
-                <h4 class="modal-title">Detalle del Pago</h4>
+                <h4 class="modal-title">Comprobante</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -367,7 +270,17 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
+                            <label for="verGestion">Gestión</label>
+                            <input type="text" class="form-control" id="verGestion" name="verGestion" readonly>
+                        </div>
+
+                        <div class="col-md-6 form-group">
+                            <label for="verCuota">Mes de Cuota</label>
+                            <input type="text" class="form-control" id="verCuota" name="verCuota" readonly>
+                        </div>
+
+                        <div class="col-md-6 form-group">
                             <label for="detalleMetodo">Método de Pago</label>
                             <select name="detalleMetodo" id="detalleMetodo" class="form-control" disabled>
                                 <?php
@@ -378,7 +291,7 @@
                                 ?>
                             </select>
                         </div>
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="detalleMonto">Monto</label>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -386,10 +299,6 @@
                                 </div>
                                 <input type="text" class="form-control" id="detalleMonto" readonly>
                             </div>
-                        </div>
-                        <div class="col-md-4 form-group">
-                            <label for="detalleGestion">Gestión</label>
-                            <input type="text" class="form-control" id="detalleGestion" readonly>
                         </div>
                     </div>
                 </div>
@@ -400,7 +309,7 @@
         </div>
     </div>
 </div>
-     
+
 <?php
 $borrar = new PagoControlador();
 $borrar->eliminar();

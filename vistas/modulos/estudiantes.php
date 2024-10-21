@@ -1,6 +1,4 @@
-<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -14,13 +12,11 @@
                     </ol>
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
 
     <!-- Main content -->
     <section class="content">
-
-        <!-- Default box -->
         <div class="card">
             <div class="card-header">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAgregar">Registrar
@@ -59,25 +55,11 @@
                                     <font style="vertical-align: inherit;">Telefono</font>
                                 </font>
                             </th>
-
-                            <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Calificación CSS: activar para ordenar las columnas de forma ascendente">
-                                <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">Fecha de nacimiento</font>
-                                </font>
-                            </th>
-
-                            <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Calificación CSS: activar para ordenar las columnas de forma ascendente">
-                                <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">Fecha registro</font>
-                                </font>
-                            </th>
-
                             <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Calificación CSS: activar para ordenar las columnas de forma ascendente">
                                 <font style="vertical-align: inherit;">
                                     <font style="vertical-align: inherit;">Curso</font>
                                 </font>
                             </th>
-
                             <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Calificación CSS: activar para ordenar las columnas de forma ascendente">
                                 <font style="vertical-align: inherit;">
                                     <font style="vertical-align: inherit;">Paralelo</font>
@@ -111,8 +93,6 @@
                                 <td class="text-uppercase">' . $value["nombre"] . '</td>
                                 <td class="text-uppercase">' . $value["apellidos"] . '</td>
                                 <td class="text-uppercase">' . $value["telefono"] . '</td>
-                                <td class="text-uppercase">' . $value["fecha_nacimiento"] . '</td>
-                                <td class="text-uppercase">' . $value["fecha_registro"] . '</td>
                                 <td class="text-uppercase">' . $curso['nombre'] . '</td>
                                 <td class="text-uppercase">' . $curso['paralelo'] . '</td>
                                 <td class="text-uppercase">' . $apoderado['nombre'] . ' ' . $apoderado['apellido'] . '</td>
@@ -184,16 +164,10 @@
                                     <?php
                                     $cursos = Curso::listar();
                                     foreach ($cursos as $key => $value) {
-                                        echo '<option value="' . $value["id"] . '">' . $value["curso"] . '</option>';
+                                        echo '<option value="' . $value["id"] . '">' . $value["nombre"] . $value["paralelo"] . '</option>';
                                     }
                                     ?>
                                 </select>
-                            </div>
-                         
-
-                            <div class="col-md-6 form-group">
-                                <label for="nuevoParalelo">Paralelo</label>
-                                <input type="text" class="form-control" id="nuevoParalelo" name="nuevoParalelo" placeholder="Ingrese Paralelo">
                             </div>
 
                             <div class="col-md-6 form-group">
@@ -272,7 +246,7 @@
                                 <?php
                                 $cursos = Curso::listar();
                                 foreach ($cursos as $key => $value) {
-                                    echo '<option value="' . $value["id"] . '">' . $value["curso"] . '</option>';
+                                    echo '<option value="' . $value["id"] . '">' . $value["nombre"] . $value["paralelo"] . '</option>';
                                 }
                                 ?>
                             </select>
@@ -287,11 +261,6 @@
                                 }
                                 ?>
                             </select>
-                        </div>
-
-                        <div class="col-md-6 form-group">
-                            <label for="verParalelo">Paralelo</label>
-                            <input type="text" class="form-control" id="verParalelo" name="verParalelo" readonly>
                         </div>
                     </div>
                     <div class="row">
@@ -364,15 +333,10 @@
                                     <?php
                                     $cursos = Curso::listar();
                                     foreach ($cursos as $key => $value) {
-                                        echo '<option value="' . $value["id"] . '">' . $value["curso"] . '</option>';
+                                        echo '<option value="' . $value["id"] . '">' . $value["nombre"] . $value["paralelo"] .'</option>';
                                     }
                                     ?>
                                 </select>
-                            </div>
-
-                            <div class="col-md-6 form-group">
-                                <label for="editarParalelo">Paralelo</label>
-                                <input type="text" class="form-control" id="editarParalelo" name="editarParalelo" placeholder="Editar Paralelo">
                             </div>
 
                             <div class="col-md-6 form-group">

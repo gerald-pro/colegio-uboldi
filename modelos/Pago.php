@@ -4,9 +4,6 @@ require_once "conexion.php";
 
 class Pago
 {
-	/*=============================================
-    MOSTRAR PAGOS
-    =============================================*/
 	static public function listar($item = null, $valor = null)
 	{
 		if ($item != null) {
@@ -21,70 +18,49 @@ class Pago
 		}
 	}
 
-	/*=============================================
-    REGISTRO DE PAGO
-    =============================================*/
-
 	static public function crear($datos)
 	{
-		$fecha_actual = date('Y/m/d H:i:s');
-
-		$stmt = Conexion::conectar()->prepare("INSERT INTO pagos (codigo, gestion, fecha, hora, monto, id_estudiante, id_apoderado, id_curso, id_usuario, id_metodo_pago) VALUES (:codigo, :gestion, :fecha, :hora, :monto, :id_estudiante, :id_apoderado, :id_curso, :id_usuario, :id_metodo_pago)");
-		$stmt->bindParam(":codigo", $datos["codigo"], PDO::PARAM_INT);
-		$stmt->bindParam(":gestion", $datos["gestion"], PDO::PARAM_INT);
-		$stmt->bindParam(":fecha", $fecha_actual, PDO::PARAM_STR);
-		$stmt->bindParam(":hora", $fecha_actual, PDO::PARAM_STR);
+		$stmt = Conexion::conectar()->prepare("INSERT INTO pagos (codigo, monto, id_estudiante, id_apoderado, id_curso, id_usuario, id_metodo_pago, id_cuota) VALUES (:codigo, :monto, :id_estudiante, :id_apoderado, :id_curso, :id_usuario, :id_metodo_pago, :id_cuota)");
+		$stmt->bindParam(":codigo", $datos["codigo"], PDO::PARAM_STR);
 		$stmt->bindParam(":monto", $datos["monto"], PDO::PARAM_STR);
-
 		$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
 		$stmt->bindParam(":id_apoderado", $datos["id_apoderado"], PDO::PARAM_INT);
 		$stmt->bindParam(":id_curso", $datos["id_curso"], PDO::PARAM_INT);
-
 		$stmt->bindParam(":id_usuario", $_SESSION["id"], PDO::PARAM_INT);
 		$stmt->bindParam(":id_metodo_pago", $datos["id_metodo_pago"], PDO::PARAM_INT);
-
+		$stmt->bindParam(":id_cuota", $datos["id_cuota"], PDO::PARAM_INT); 
 
 		if ($stmt->execute()) {
 			return "ok";
 		} else {
-			return "error";
+			return $stmt->errorInfo()[2];
 		}
 	}
-
-	/*=============================================
-    EDITAR PAGO
-    =============================================*/
 
 	static public function editar($datos)
 	{
 		if (isset($datos["id"])) {
-			$fecha_actual = date('Y/m/d H:i:s');
+			$stmt = Conexion::conectar()->prepare("UPDATE pagos SET codigo = :codigo, monto = :monto, id_estudiante = :id_estudiante, id_apoderado = :id_apoderado, id_curso = :id_curso, id_usuario = :id_usuario, id_metodo_pago = :id_metodo_pago, id_cuota = :id_cuota WHERE id = :id");
 
-			$stmt = Conexion::conectar()->prepare("UPDATE pagos SET codigo= :codigo, hora = :hora, monto = :monto, id_estudiante = :id_estudiante, id_apoderado = :id_apoderado, id_curso = :id_curso, id_usuario = :id_usuario WHERE id = :id");
-			$stmt->bindParam(":codigo", $datos["codigo"], PDO::PARAM_STR);
-			$stmt->bindParam(":hora", $fecha_actual, PDO::PARAM_STR);
-			$stmt->bindParam(":monto", $datos["monto"], PDO::PARAM_STR);
-
-			$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
-			$stmt->bindParam(":id_apoderado", $datos["id_apoderado"], PDO::PARAM_INT);
-			$stmt->bindParam(":id_curso", $datos["id_curso"], PDO::PARAM_INT);
-
-			$stmt->bindParam(":id_usuario", $_SESSION["id"], PDO::PARAM_INT);
-			$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+            $stmt->bindParam(":codigo", $datos["codigo"], PDO::PARAM_STR);
+            $stmt->bindParam(":monto", $datos["monto"], PDO::PARAM_STR);
+            $stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
+            $stmt->bindParam(":id_apoderado", $datos["id_apoderado"], PDO::PARAM_INT);
+            $stmt->bindParam(":id_curso", $datos["id_curso"], PDO::PARAM_INT);
+            $stmt->bindParam(":id_usuario", $_SESSION["id"], PDO::PARAM_INT);
+            $stmt->bindParam(":id_metodo_pago", $datos["id_metodo_pago"], PDO::PARAM_INT);
+            $stmt->bindParam(":id_cuota", $datos["id_cuota"], PDO::PARAM_INT);
+            $stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
 
 			if ($stmt->execute()) {
 				return "ok";
 			} else {
-				return "error";
+				return $stmt->errorInfo()[2];
 			}
 		} else {
 			return "error";
 		}
 	}
-
-	/*=============================================
-    ACTUALIZAR PAGO
-    =============================================*/
 
 	static public function actualizar($item1, $valor1, $item2, $valor2)
 	{
@@ -95,13 +71,9 @@ class Pago
 		if ($stmt->execute()) {
 			return "ok";
 		} else {
-			return "error";
+			return $stmt->errorInfo()[2];
 		}
 	}
-
-	/*=============================================
-    BORRAR PAGO
-    =============================================*/
 
 	static public function eliminar($datos)
 	{
@@ -111,13 +83,10 @@ class Pago
 		if ($stmt->execute()) {
 			return "ok";
 		} else {
-			return "error";
+			return $stmt->errorInfo()[2];
 		}
 	}
 
-	/*=============================================
-     OBTENER HISTORIAL DE PAGOS POR ESTUDIANTE
-    =============================================*/
 	static public function listarPorEstudiante($idEstudiante)
 	{
 		$stmt = Conexion::conectar()->prepare("SELECT * FROM pagos WHERE id_estudiante = :id_estudiante ORDER BY fecha ASC");

@@ -16,7 +16,7 @@ class CursoControlador
 				$tabla = "curso";
 
 				$datos = array(
-					"curso" => $_POST["nuevoCurso"],
+					"nombre" => $_POST["nuevoCurso"],
 					"paralelo" => $_POST["nuevoParalelo"]
 				);
 
@@ -85,7 +85,7 @@ class CursoControlador
 			) {
 				$datos = array(
 					"id" => $_POST["idCurso"],
-					"curso" => $_POST["editarCurso"],
+					"nombre" => $_POST["editarCurso"],
 					"paralelo" => $_POST["editarParalelo"]
 				);
 

@@ -118,6 +118,16 @@
         </li>
 
         <li class="nav-item">
+          <a href="cuotas" class="nav-link <?php if ($_GET['rutas'] == 'cuotas') echo 'active' ?>">
+            <i class="nav-icon fas fa-file-alt" style="color: #B71C1C;"></i>
+            <p>
+              Cuotas
+              <span class="right badge badge-danger"></span>
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
           <a href="pagos" class="nav-link <?php if ($_GET['rutas'] == 'pagos') echo 'active' ?>">
             <i class="nav-icon fas fa-money-bill-wave" style="color: #B71C1C;"></i>
             <p>

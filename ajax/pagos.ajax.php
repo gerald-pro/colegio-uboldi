@@ -2,6 +2,7 @@
 
 require_once "../controladores/PagoControlador.php";
 require_once "../modelos/Pago.php";
+require_once "../modelos/Cuota.php";
 
 class AjaxPagos
 {
@@ -14,10 +15,14 @@ class AjaxPagos
 
 		$respuesta = Pago::listar($item, $valor);
 		if ($respuesta) {
+			$cuota = Cuota::listar('id', $respuesta['id_cuota']);
 			$fecha = date_create($respuesta['fecha']);
-			$hora = date_create($respuesta['hora']);
+
 			$respuesta['fecha'] = date_format($fecha, "Y-m-d");
 			$respuesta['hora'] = date_format($fecha, "H:i");
+			$respuesta['cuota'] = $cuota['mes'];
+			$respuesta['gestion'] = $cuota['gestion'];
+
 			echo json_encode($respuesta);
 		} else {
 			echo json_encode(["error" => "Pago no encontrado"]);

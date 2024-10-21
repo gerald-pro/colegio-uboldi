@@ -21,9 +21,9 @@ $(".tablas").on("click", ".btnVerEstudiante", function(){
             $("#verCorreo").val(respuesta["correo"]);
             $("#verDireccion").val(respuesta["direccion"]);
             $("#verTelefono").val(respuesta["telefono"]);
-            $("#verFechaNac").val(respuesta["fechanac"]);
-            $("#verfechaAct").val(respuesta["fechaact"]);
-            $("#verFechaReg").val(respuesta["fecharegistro"]);
+            $("#verFechaNac").val(respuesta["fecha_nacimiento"]);
+            $("#verfechaAct").val(respuesta["fecha_actualizacion"]);
+            $("#verFechaReg").val(respuesta["fecha_registro"]);
             $("#verIdCurso").val(respuesta["id_curso"]);
             $("#verParalelo").val(respuesta["paralelo"]);
             $("#verIdApoderado").val(respuesta["id_apoderado"]);
@@ -58,7 +58,7 @@ $(".tablas").on("click", ".btnEditarEstudiante", function(){
             $("#editarCorreo").val(respuesta["correo"]);
             $("#editarDireccion").val(respuesta["direccion"]);
             $("#editarTelefono").val(respuesta["telefono"]);
-            $("#editarFechaNac").val(respuesta["fechanac"]);
+            $("#editarFechaNac").val(respuesta["fecha_nacimiento"]);
             $("#editarIdCurso").val(respuesta["id_curso"]);
             $("#editarParalelo").val(respuesta["paralelo"]);
             $("#editarIdApoderado").val(respuesta["id_apoderado"]);

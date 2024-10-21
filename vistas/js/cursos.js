@@ -17,7 +17,7 @@ $(".tablas").on("click", ".btnEditarCurso", function(){
 		processData: false,
 		dataType:"json",
 		success: function(respuesta){
-			$("#editarCurso").val(respuesta["curso"]);
+			$("#editarCurso").val(respuesta["nombre"]);
 			$("#editarParalelo").val(respuesta["paralelo"]);
 			$("#idCurso").val(respuesta["id"]);
 		},

@@ -1,140 +1,72 @@
 <?php
+
+require_once 'Validador.php';
+require_once 'Mensajes.php';
+
 class PagoControlador
 {
-	/*=============================================
-    REGISTRO DE PAGO
-    =============================================*/
 	static public function crear()
 	{
 		if (isset($_POST["nuevoMonto"]) && isset($_POST["nuevoIdApoderado"])) {
 			if (
-				preg_match('/^[0-9]+$/', $_POST["nuevoCpago"]) &&
-				preg_match('/^[0-9]+$/', $_POST["nuevoMonto"]) &&
-
-				preg_match('/^[0-9]+$/', $_POST["nuevoIdEstudiante"]) &&
-				preg_match('/^[0-9]+$/', $_POST["nuevoIdApoderado"]) &&
-				preg_match('/^[0-9]+$/', $_POST["nuevoIdCurso"])
-
+				Validador::validarFlotante($_POST["nuevoMonto"]) &&
+				Validador::validarSoloNumeros($_POST["nuevoIdEstudiante"]) &&
+				Validador::validarSoloNumeros($_POST["nuevoIdMetodo"]) &&
+				Validador::validarSoloNumeros($_POST["nuevoIdCuota"])
 			) {
+
+				$apoderado = Apoderado::buscarPorEstudiante($_POST['nuevoIdEstudiante']);
+				$estudiante = Estudiante::listar('id', $_POST['nuevoIdEstudiante']);
+				$curso = Curso::buscarPorId($estudiante['id_curso']);
+
 				$datos = array(
 					"codigo" => $_POST["nuevoCpago"],
 					"monto" => $_POST["nuevoMonto"],
 					"gestion" => $_POST["nuevoGestion"],
 					"id_estudiante" => $_POST['nuevoIdEstudiante'],
-					"id_apoderado" => $_POST['nuevoIdApoderado'],
-					"id_curso" => $_POST['nuevoIdCurso'],
+					"id_apoderado" => $apoderado['id'],
+					"id_curso" => $curso['id'],
 					"id_metodo_pago" => $_POST['nuevoIdMetodo'],
+					"id_cuota" => $_POST["nuevoIdCuota"]
 				);
 
 				$respuesta = Pago::crear($datos);
 
 				if ($respuesta == "ok") {
-					echo '<script>
-                    swal({
-                          type: "success",
-                          title: "El pago ha sido registrado correctamente",
-                          showConfirmButton: true,
-                          confirmButtonText: "Cerrar"
-                          }).then(function(result){
-                                    if (result.value) {
-                                    window.location = "pagos";
-                                    }
-                                })
-
-                    </script>';
+					$mensaje =  Mensaje::obtenerMensaje(
+						"success",
+						"El pago ha sido registrado correctamente",
+						null,
+						"pagos"
+					);
+				} else {
+					$mensaje = Mensaje::obtenerMensaje(
+						"error",
+						"Ocurrió un error",
+						$respuesta,
+						"pagos"
+					);
 				}
+				echo $mensaje;
 			} else {
-				echo '<script>
+				$mensaje = Mensaje::obtenerMensaje(
+					"error",
+					"Entrada incorrecta",
+					"¡Los campos no pueden ir vacíos y deben contener los formatos correctos!",
+					"estudiantes"
+				);
 
-                    swal({
-                          type: "error",
-                          title: "¡Los campos no pueden ir vacíos y deben contener los formatos correctos!",
-                          showConfirmButton: true,
-                          confirmButtonText: "Cerrar"
-                          }).then(function(result){
-                            if (result.value) {
-                            window.location = "pagos";
-                            }
-                    
-                  </script>';
+				echo $mensaje;
 			}
 		}
 	}
 
-	/*=============================================
-    MOSTRAR PAGOS
-    =============================================*/
 	static public function listar()
 	{
 		$respuesta = Pago::listar();
 		return $respuesta;
 	}
 
-	/*=============================================
-    EDITAR PAGO
-    =============================================*/
-
-	static public function editar()
-	{
-		if (isset($_POST["editarMonto"])) {
-			if (
-				preg_match('/^[0-9]+$/', $_POST["editarCodigo"]) &&
-				preg_match('/^[0-9]+$/', $_POST["editarMonto"]) &&
-
-				preg_match('/^[0-9]+$/', $_POST["editarIdEstudiante"]) &&
-				preg_match('/^[0-9]+$/', $_POST["editarIdApoderado"]) &&
-				preg_match('/^[0-9]+$/', $_POST["editarIdCurso"])
-
-			) {
-
-				$datos = array(
-					"codigo" => $_POST["editarCodigo"],
-					"monto" => $_POST["editarMonto"],
-
-					"id_estudiante" => $_POST["editarIdEstudiante"],
-					"id_apoderado" => $_POST["editarIdApoderado"],
-					"id_curso" => $_POST["editarIdCurso"],
-
-					"id" => $_POST["idPago"]
-				);
-
-				$respuesta = Pago::editar($datos);
-
-				if ($respuesta == "ok") {
-					echo '<script>
-                    swal({
-                          type: "success",
-                          title: "El pago ha sido editado correctamente",
-                          showConfirmButton: true,
-                          confirmButtonText: "Cerrar"
-                          }).then(function(result){
-                                    if (result.value) {
-                                    window.location = "pagos";
-                                    }
-                                })
-                    </script>';
-				}
-			} else {
-				echo '<script>
-                    swal({
-                          type: "error",
-                          title: "¡Los campos no pueden ir vacíos y deben contener los formatos correctos!",
-                          showConfirmButton: true,
-                          confirmButtonText: "Cerrar"
-                          }).then(function(result){
-                            if (result.value) {
-                            window.location = "pagos";
-                            }
-                        })
-
-                  </script>';
-			}
-		}
-	}
-
-	/*=============================================
-    ELIMINAR PAGO
-    =============================================*/
 	static public function eliminar()
 	{
 		if (isset($_GET["id"])) {
@@ -142,19 +74,14 @@ class PagoControlador
 			$respuesta = Pago::eliminar($datos);
 
 			if ($respuesta == "ok") {
-				echo '<script>
-                swal({
-                      type: "success",
-                      title: "El pago ha sido borrado correctamente",
-                      showConfirmButton: true,
-                      confirmButtonText: "Cerrar"
-                      }).then(function(result){
-                                if (result.value) {
+				$mensaje =  Mensaje::obtenerMensaje(
+					"success",
+					"El pago ha sido borrado correctamente",
+					null,
+					"pagos"
+				);
 
-                                window.location = "pagos";
-                                }
-                            })
-                </script>';
+				echo $mensaje;
 			}
 		}
 	}

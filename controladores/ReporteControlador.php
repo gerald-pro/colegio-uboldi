@@ -96,7 +96,7 @@ class ReporteControlador
                     $pdf->Cell(40, 8, $apoderado['nombre'] . " " . $apoderado['apellido'], 1, '', 'L');
                     $pdf->Cell(40, 8, $usuario['usuario'], 1, '', 'L');
                     $pdf->Cell(18, 8, $pago['gestion'], 1, '', 'R');
-                    $pdf->Cell(15, 8, $curso['curso'] . " " . $curso['paralelo'], 1, '', 'R');
+                    $pdf->Cell(15, 8, $curso['nombre'] . " " . $curso['paralelo'], 1, '', 'R');
                     $pdf->Cell(21, 8, $pago['monto'], 1, '', 'R');
                     $pdf->Ln();
                 } catch (\Throwable $th) {

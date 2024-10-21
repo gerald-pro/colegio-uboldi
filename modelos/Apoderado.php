@@ -29,6 +29,21 @@ class Apoderado {
 		return $stmt->fetch();
 	}
 
+    static public function buscarPorEstudiante($idEstudiante)
+    {
+        $stmt = Conexion::conectar()->prepare("
+            SELECT a.*
+            FROM apoderado a
+            JOIN estudiante e ON a.id = e.id_apoderado
+            WHERE e.id = :id_estudiante
+        ");
+
+        $stmt->bindParam(":id_estudiante", $idEstudiante, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
+
     /*=============================================
     REGISTRO DE APODERADO
     =============================================*/

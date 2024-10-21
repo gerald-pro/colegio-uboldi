@@ -172,9 +172,7 @@ class UsuarioControlador
 				$respuesta = Usuario::mdlEditarUsuario($tabla, $datos);
 
 				if ($respuesta == "ok") {
-
 					echo '<script>
-
 					swal({
 						  type: "success",
 						  title: "El usuario ha sido editado correctamente",
@@ -182,12 +180,23 @@ class UsuarioControlador
 						  confirmButtonText: "Cerrar"
 						  }).then(function(result){
 									if (result.value) {
-
 									window.location = "usuarios";
-
 									}
 								})
-
+					</script>';
+				}
+				else {
+					echo '<script>
+					swal({
+						  type: "success",
+						  title: "' . $respuesta . '",
+						  showConfirmButton: true,
+						  confirmButtonText: "Cerrar"
+						  }).then(function(result){
+									if (result.value) {
+									window.location = "usuarios";
+									}
+								})
 					</script>';
 				}
 			} else {
