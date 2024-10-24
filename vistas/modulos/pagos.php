@@ -37,7 +37,7 @@
                             <th>Codigo</th>
                             <th>Fecha</th>
                             <th>Hora</th>
-                            <th>Monto</th>
+                            <th>Monto total</th>
                             <th>Estudiante</th>
                             <th>Tutor</th>
                             <th>Curso</th>
@@ -66,7 +66,7 @@
                                 <td class="text-uppercase">' . $value["codigo"] . '</td>
                                 <td class="text-uppercase">' . $fechaFormateada . '</td>
                                 <td class="text-uppercase">' . $hora . '</td>
-                                <td class="text-uppercase">' . $value["monto"] . '</td>
+                                <td class="text-uppercase">' . $value["monto_total"] . '</td>
                                 <td class="text-uppercase">' . $estudiante['nombre'] . ' ' . $estudiante['apellidos'] . '</td>
                                 <td class="text-uppercase">' . $apoderado['nombre'] . ' ' . $apoderado['apellido'] . '</td>
                                 <td class="text-uppercase">' . $curso['nombre'] . $curso['paralelo'] . '</td>
@@ -101,14 +101,9 @@
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-md-6 form-group">
+                            <div class="col-md-12 form-group">
                                 <label for="nuevoCpago">Código</label>
                                 <input type="text" class="form-control" id="nuevoCpago" name="nuevoCpago" required>
-                            </div>
-
-                            <div class="col-md-6 form-group">
-                                <label for="nuevoGestion">Gestion</label>
-                                <input type="number" class="form-control" id="nuevoGestion" name="nuevoGestion" required min="2000" max="2099" step="1" value="2024">
                             </div>
 
                             <div class="col-md-6 form-group">
@@ -142,14 +137,14 @@
                             </div>
 
                             <div class="col-md-6 form-group">
-                                <label for="nuevoIdCuota">Cuota</label>
-                                <select name="nuevoIdCuota" id="nuevoIdCuota" class="form-control" required>
-                                    <option value="">Seleccionar cuota pendiente</option>
+                                <label for="nuevoIdCuotas">Cuotas</label>
+                                <select name="nuevoIdCuotas[]" id="nuevoIdCuotas" class="form-control" multiple required>
+
                                 </select>
                             </div>
 
                             <div class="col-md-6 form-group">
-                                <label for="nuevoMonto">Monto</label>
+                                <label for="nuevoMonto">Monto total</label>
                                 <input type="text" class="form-control" id="nuevoMonto" name="nuevoMonto" readonly>
                             </div>
 
@@ -157,7 +152,6 @@
                                 <label for="nuevoIdCurso">Curso</label>
                                 <input type="text" class="form-control" id="nuevoIdCurso" name="nuevoIdCurso" readonly>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -198,12 +192,9 @@
                         </div>
 
                         <div class="col-md-6 form-group">
-                            <label for="verMonto">Monto</label>
+                            <label for="verCurso">Curso</label>
                             <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">Bs</span>
-                                </div>
-                                <input type="text" class="form-control" id="verMonto" name="verMonto" readonly>
+                                <input type="text" class="form-control" id="verCurso" name="verCurso" readonly>
                             </div>
                         </div>
 
@@ -247,8 +238,11 @@
                             </select>
                         </div>
                     </div>
+                    <label for="">Cuotas</label>
 
+                    <div id="detalleCuotas"></div>
                 </div>
+
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cerrar</button>
@@ -271,13 +265,8 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <label for="verGestion">Gestión</label>
-                            <input type="text" class="form-control" id="verGestion" name="verGestion" readonly>
-                        </div>
-
-                        <div class="col-md-6 form-group">
-                            <label for="verCuota">Mes de Cuota</label>
-                            <input type="text" class="form-control" id="verCuota" name="verCuota" readonly>
+                            <label for="verCodigo">Código</label>
+                            <input type="text" class="form-control" id="verCodigo" name="verCodigo" readonly>
                         </div>
 
                         <div class="col-md-6 form-group">
@@ -292,7 +281,7 @@
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="detalleMonto">Monto</label>
+                            <label for="detalleMonto">Monto total</label>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">Bs</span>

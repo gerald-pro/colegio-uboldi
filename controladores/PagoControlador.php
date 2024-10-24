@@ -12,27 +12,39 @@ class PagoControlador
 				Validador::validarFlotante($_POST["nuevoMonto"]) &&
 				Validador::validarSoloNumeros($_POST["nuevoIdEstudiante"]) &&
 				Validador::validarSoloNumeros($_POST["nuevoIdMetodo"]) &&
-				Validador::validarSoloNumeros($_POST["nuevoIdCuota"])
+				isset($_POST["nuevoIdCuotas"]) && is_array($_POST["nuevoIdCuotas"])
 			) {
-
 				$apoderado = Apoderado::buscarPorEstudiante($_POST['nuevoIdEstudiante']);
 				$estudiante = Estudiante::listar('id', $_POST['nuevoIdEstudiante']);
 				$curso = Curso::buscarPorId($estudiante['id_curso']);
 
-				$datos = array(
+				$datosPago  = array(
 					"codigo" => $_POST["nuevoCpago"],
-					"monto" => $_POST["nuevoMonto"],
-					"gestion" => $_POST["nuevoGestion"],
+					"monto_total" => $_POST["nuevoMonto"],
 					"id_estudiante" => $_POST['nuevoIdEstudiante'],
 					"id_apoderado" => $apoderado['id'],
 					"id_curso" => $curso['id'],
 					"id_metodo_pago" => $_POST['nuevoIdMetodo'],
-					"id_cuota" => $_POST["nuevoIdCuota"]
 				);
 
-				$respuesta = Pago::crear($datos);
+				$response = Pago::crear($datosPago);
 
-				if ($respuesta == "ok") {
+				if (is_numeric($response)) {
+					foreach ($_POST["nuevoIdCuotas"] as $idCuota) {
+						$cuota = Cuota::listar('id', $idCuota);
+						$respuestaDetalle = DetallePago::crear($response, $idCuota, $cuota['monto']);
+
+						if ($respuestaDetalle != "ok") {
+							echo Mensaje::obtenerMensaje(
+								"error",
+								"Ocurrió un error en el registro de los detalles de pago",
+								$respuestaDetalle,
+								"pagos"
+							);
+							return;
+						}
+					}
+
 					$mensaje =  Mensaje::obtenerMensaje(
 						"success",
 						"El pago ha sido registrado correctamente",
@@ -40,10 +52,14 @@ class PagoControlador
 						"pagos"
 					);
 				} else {
+					if ($response[0] == 23000) {
+						$response[2] = "El código de pago ya existe en la base de datos";
+					}
+
 					$mensaje = Mensaje::obtenerMensaje(
 						"error",
 						"Ocurrió un error",
-						$respuesta,
+						$response[2],
 						"pagos"
 					);
 				}

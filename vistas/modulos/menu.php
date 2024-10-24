@@ -137,7 +137,14 @@
           </a>
         </li>
 
-        <li class="nav-item has-treeview">
+        <li class="nav-item">
+          <a href="reportes" class="nav-link">
+            <i class="nav-icon fas fa-chart-pie text-danger"></i>
+            <p>Reportes</p>
+          </a>
+        </li>
+
+        <!-- <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-chart-pie text-danger"></i>
             <p>
@@ -146,28 +153,14 @@
             </p>
           </a>
           <ul class="nav nav-treeview">
-           <!--  <li class="nav-item">
-              <a href="reporte_mensualidad"
-                class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Reporte de mensualidad</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="reporte_mora" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Reporte de estudiantes con mora</p>
-              </a>
-            </li> -->
-
             <li class="nav-item">
               <a href="historial-pagos" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Historial de pagos</p>
               </a>
-            </li> 
+            </li>
           </ul>
-        </li>
+        </li> -->
       </ul>
     </nav>
   </div>

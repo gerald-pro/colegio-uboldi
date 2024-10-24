@@ -13,7 +13,7 @@ if (isset($_POST["idEstudiante"])) {
         $estudiante = $reporte['estudiante'];
         $pagos = $reporte['pagos'];
 
-        echo "<h4>Historial de pagos de {$estudiante['nombre']} {$estudiante['apellidos']}</h4>";
+        echo "<h5>Estudiante: {$estudiante['nombre']} {$estudiante['apellidos']}</h5>";
         echo "<table class='table table-bordered table-striped'>";
         echo "<thead>
         <tr>
@@ -33,13 +33,24 @@ if (isset($_POST["idEstudiante"])) {
             echo "<td>{$fechaFormateada}</td>";
             echo "<td>{$apoderado['nombre']}</td>";
             echo "<td>{$usuario['usuario']}</td>";
-            echo "<td>{$pago['monto']}</td>";
+            echo "<td>{$pago['monto_total']}</td>";
             echo "</tr>";
         }
         echo "</tbody></table>";
     } else {
         echo "No se encontraron pagos para este estudiante.";
     }
+}
+
+if (isset($_POST["idApoderadoReporte"])) {
+    $pdfContent = ReporteControlador::estudiantesPorApoderadoPDF($_POST["idApoderadoReporte"]);
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
 }
 
 if (isset($_POST["idEstudianteReporte"])) {

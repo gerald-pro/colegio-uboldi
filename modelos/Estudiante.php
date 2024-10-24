@@ -71,4 +71,12 @@ class Estudiante
             return $stmt->fetchAll();
         }
     }
+
+    static public function listarPorApoderado($idApoderado)
+    {
+        $stmt = Conexion::conectar()->prepare("SELECT * FROM estudiante WHERE id_apoderado = :id_apoderado");
+        $stmt->bindParam(":id_apoderado", $idApoderado, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }

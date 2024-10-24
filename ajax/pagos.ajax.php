@@ -3,6 +3,7 @@
 require_once "../controladores/PagoControlador.php";
 require_once "../modelos/Pago.php";
 require_once "../modelos/Cuota.php";
+require_once "../modelos/Curso.php";
 
 class AjaxPagos
 {
@@ -15,13 +16,14 @@ class AjaxPagos
 
 		$respuesta = Pago::listar($item, $valor);
 		if ($respuesta) {
-			$cuota = Cuota::listar('id', $respuesta['id_cuota']);
+			$curso = Curso::buscarPorId($respuesta['id_curso']);
+			$cuotas = Cuota::listarCuotasPorPago($valor);
 			$fecha = date_create($respuesta['fecha']);
 
 			$respuesta['fecha'] = date_format($fecha, "Y-m-d");
 			$respuesta['hora'] = date_format($fecha, "H:i");
-			$respuesta['cuota'] = $cuota['mes'];
-			$respuesta['gestion'] = $cuota['gestion'];
+			$respuesta['detalle_cuotas'] = $cuotas;
+			$respuesta['curso'] = $curso;
 
 			echo json_encode($respuesta);
 		} else {

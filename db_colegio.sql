@@ -80,22 +80,30 @@ CREATE TABLE cuotas (
 
 -- Tabla: pagos
 CREATE TABLE pagos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    codigo VARCHAR(10) NOT NULL,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    monto DECIMAL(10, 2) NOT NULL,
-    id_estudiante INT NOT NULL,
-    id_apoderado INT NOT NULL,
-    id_curso INT NOT NULL,
-    id_usuario INT NOT NULL,
-    id_metodo_pago INT NOT NULL,
-    id_cuota INT NOT NULL,
-    FOREIGN KEY (id_estudiante) REFERENCES estudiante(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_apoderado) REFERENCES apoderado(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_curso) REFERENCES curso(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_metodo_pago) REFERENCES metodos_pago(id),
-    FOREIGN KEY (id_cuota) REFERENCES cuotas(id)
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  codigo VARCHAR(10) NOT NULL UNIQUE,
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  monto_total DECIMAL(10, 2) NOT NULL,
+  id_estudiante INT NOT NULL,         
+  id_apoderado INT NOT NULL,
+  id_curso INT NOT NULL, 
+  id_usuario INT NOT NULL,
+  id_metodo_pago INT NOT NULL,
+  FOREIGN KEY (id_estudiante) REFERENCES estudiante(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (id_apoderado) REFERENCES apoderado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (id_curso) REFERENCES curso(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (id_metodo_pago) REFERENCES metodos_pago(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE detalle_pago (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_pago INT NOT NULL, 
+  id_cuota INT NOT NULL, 
+  monto DECIMAL(10, 2) NOT NULL,
+  FOREIGN KEY (id_pago) REFERENCES pagos(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (id_cuota) REFERENCES cuotas(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -124,7 +132,9 @@ INSERT INTO `curso` (`id`, `nombre`, `paralelo`) VALUES
 
 
 INSERT INTO `estudiante` (`id`, `nombre`, `apellidos`, `direccion`, `fecha_nacimiento`, `correo`, `telefono`, `fecha_registro`, `fecha_actualizacion`, `id_curso`, `id_apoderado`) VALUES
-(4, 'marcos', 'saucedo', 'el plan3000', '2008-07-16', 'marcos@gmail.com', '78786767', '2024-06-02', '2024-06-04 12:35:57', 13, 5);
+(4, 'marcos', 'saucedo', 'el plan3000', '2008-07-16', 'marcos@gmail.com', '78786767', '2024-06-02', '2024-06-04 12:35:57', 13, 5),
+(5, 'gerald', 'avalos', 'la guardia', '2001-09-12', 'avaloss.gerald@gmail.com', '70480741', '2024-10-24', '2024-10-25 11:40:50', 13, 3);
+
 
 INSERT INTO `metodos_pago` (`metodo`) VALUES ('Efectivo'), ('Depósito Bancario'), ('QR');
 
@@ -142,11 +152,22 @@ INSERT INTO `cuotas` (`id`, `gestion`, `mes`, `monto`, `fecha_vencimiento`) VALU
 (10, 2024, 10, 340, '2024-10-31');
 
 
-INSERT INTO `pagos` (codigo, monto, id_estudiante, id_apoderado, id_curso, id_usuario, id_metodo_pago, id_cuota) VALUES
-(123, 340, 4, 5, 13, 4, 1, 1),
-(124, 340, 4, 3, 8, 4, 1, 2),
-(125, 340, 4, 3, 8, 4, 1, 3),
-(126, 340, 4, 6, 9, 4, 1, 4),
-(127, 340, 4, 3, 8, 4, 1, 5),
-(128, 340, 4, 4, 8, 4, 1, 6),
-(129, 340, 4, 4, 9, 4, 1, 7);
+INSERT INTO `pagos` (codigo, monto_total, id_estudiante, id_apoderado, id_curso, id_usuario, id_metodo_pago) VALUES
+('123', 340, 4, 5, 8, 4, 1),
+('124', 680, 4, 3, 8, 4, 1),
+('125', 340, 4, 3, 8, 4, 1),
+('126', 340, 4, 6, 8, 4, 1),
+('127', 340, 4, 3, 8, 4, 1),
+('128', 340, 4, 4, 8, 4, 1),
+('129', 340, 4, 4, 8, 4, 1);
+
+
+INSERT INTO detalle_pago (id_pago, id_cuota, monto) VALUES
+(1, 1, 340), 
+(2, 2, 340), 
+(2, 3, 340),
+(3, 4, 340),
+(4, 5, 340),
+(5, 6, 340),
+(6, 7, 340),
+(7, 8, 340);

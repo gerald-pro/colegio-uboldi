@@ -12,6 +12,7 @@ require_once "modelos/Curso.php";
 require_once "modelos/Cuota.php";
 require_once "modelos/MetodoPago.php";
 require_once "modelos/Pago.php";
+require_once "modelos/DetallePago.php";
 require_once "modelos/Usuario.php";
 require_once "modelos/Estudiante.php";
 date_default_timezone_set('America/La_Paz');

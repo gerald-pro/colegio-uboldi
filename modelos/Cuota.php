@@ -91,13 +91,29 @@ class Cuota
         $stmt = Conexion::conectar()->prepare("
             SELECT c.*
             FROM cuotas c
-            LEFT JOIN pagos p ON c.id = p.id_cuota AND p.id_estudiante = :id_estudiante
-            WHERE p.id_cuota IS NULL
+            LEFT JOIN detalle_pago dp ON c.id = dp.id_cuota
+            LEFT JOIN pagos p ON dp.id_pago = p.id AND p.id_estudiante = :id_estudiante
+            WHERE p.id IS NULL
             ORDER BY c.fecha_vencimiento ASC
         ");
 
         $stmt->bindParam(":id_estudiante", $idEstudiante, PDO::PARAM_INT);
         $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    static public function listarCuotasPorPago($idPago)
+    {
+        $stmt = Conexion::conectar()->prepare("
+            SELECT c.*
+            FROM detalle_pago dp
+            JOIN cuotas c ON dp.id_cuota = c.id
+            WHERE dp.id_pago = :id_pago
+        ");
+
+        $stmt->bindParam(":id_pago", $idPago, PDO::PARAM_INT);
+        $stmt->execute();
+
         return $stmt->fetchAll();
     }
 }

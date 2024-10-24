@@ -4,7 +4,6 @@ MOSTRAR PAGO
 
 $(".tablas").on("click", ".btnVerPago", function () {
     var id = $(this).attr("id");
-
     var datos = new FormData();
     datos.append("id", id);
 
@@ -23,12 +22,50 @@ $(".tablas").on("click", ".btnVerPago", function () {
             $("#verHora").val(respuesta["hora"]);
             $("#verMonto").val(respuesta["monto"]);
             $("#verIdEstudiante").val(respuesta["id_estudiante"]);
-            $("#verIdApoderado").val(respuesta["id_apoderado"]);
-            $("#verIdCurso").val(respuesta["id_curso"]);
+            $("#verIdApoderado").val(respuesta.id_apoderado);
+            $("#verCurso").val(respuesta.curso.nombre + respuesta.curso.paralelo);
             $("#detalleMetodo").val(respuesta["id_metodo_pago"]);
             $("#verGestion").val(respuesta["gestion"]);
             $("#verCuota").val(respuesta["cuota"]);
-            $("#detalleMonto").val(respuesta["monto"]);
+            $("#verMonto").val(respuesta["monto_total"]);
+            $("#detalleMonto").val(respuesta["monto_total"]);
+
+            $("#detalleCuotas").html("");
+
+            var detalleCuotasHTML = `
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Gestión</th>
+                            <th>Mes</th>
+                            <th>Monto (Bs)</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+
+            // Asignar detalles de las cuotas pagadas
+            if (respuesta.detalle_cuotas) {
+                respuesta.detalle_cuotas.forEach(function (detalle) {
+                    detalleCuotasHTML += `
+                        <tr>
+                            <td>${detalle.gestion}</td>
+                            <td>${detalle.mes}</td>
+                            <td>${detalle.monto}</td>
+                        </tr>`;
+                });
+            } else {
+                detalleCuotasHTML += `
+                    <tr>
+                        <td colspan="3">No hay cuotas asociadas</td>
+                    </tr>`;
+            }
+
+            detalleCuotasHTML += `
+                    </tbody>
+                </table>`;
+
+            $("#detalleCuotas").html(detalleCuotasHTML);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
@@ -37,18 +74,30 @@ $(".tablas").on("click", ".btnVerPago", function () {
     });
 });
 
+function actualizarMontoTotal() {
+    var totalMonto = 0;
+    $("#nuevoIdCuotas option:selected").each(function () {
+        var monto = $(this).data("monto");
+        totalMonto += parseFloat(monto);
+    });
+    $("#nuevoMonto").val(totalMonto.toFixed(2));
+}
+
+
 $(document).ready(function () {
     $("#nuevoIdEstudiante").change(function () {
         var idEstudiante = $(this).val();
 
         $("#nuevoIdCuota").html('<option value="">Seleccionar cuota pendiente</option>');
+        $("#nuevoIdCuotas").html('');
+        actualizarMontoTotal();
 
         if (idEstudiante) {
             var datos = new FormData();
             datos.append("idEstudiante", idEstudiante);
 
             $.ajax({
-                url: "ajax/cuotas.ajax.php", // Endpoint que se encargará de devolver las cuotas pendientes
+                url: "ajax/cuotas.ajax.php",
                 method: "POST",
                 data: datos,
                 cache: false,
@@ -56,13 +105,15 @@ $(document).ready(function () {
                 processData: false,
                 dataType: "json",
                 success: function (respuesta) {
+                    console.log(respuesta);
+
                     // Llenar el select con las cuotas pendientes
                     if (respuesta.length > 0) {
                         respuesta.forEach(function (cuota) {
-                            $("#nuevoIdCuota").append('<option value="' + cuota.id + '" data-monto="' + cuota.monto + '" data-curso="' + cuota.id_curso + '">Mes: ' + cuota.mes + ' - Monto: ' + cuota.monto + '</option>');
+                            $("#nuevoIdCuotas").append('<option value="' + cuota.id + '" data-monto="' + cuota.monto + '" data-curso="' + cuota.id_curso + '">Mes: ' + cuota.mes + ' - Monto: ' + cuota.monto + '</option>');
                         });
                     } else {
-                        $("#nuevoIdCuota").html('<option value="">No hay cuotas pendientes</option>');
+                        $("#nuevoIdCuotas").html('<option value="">No hay cuotas pendientes</option>');
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -71,13 +122,12 @@ $(document).ready(function () {
             });
 
             $.ajax({
-                url: "ajax/apoderado.ajax.php", // Endpoint que devolverá el apoderado correspondiente
+                url: "ajax/apoderado.ajax.php",
                 method: "POST",
                 data: { idEstudiante: idEstudiante },
                 dataType: "json",
                 success: function (respuesta) {
                     if (respuesta) {
-                        // Asigna el nombre del apoderado al input
                         $("#nuevoIdApoderado").val(respuesta.nombre + ' ' + respuesta.apellido);
                     }
                 },
@@ -93,7 +143,6 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (respuesta) {
                     if (respuesta) {
-                        // Asigna el nombre del curso al input
                         $("#nuevoIdCurso").val(respuesta.nombre); // Aquí asumimos que respuesta tiene el nombre del curso
                     }
                 },
@@ -104,48 +153,8 @@ $(document).ready(function () {
         }
     });
 
-    $("#nuevoIdCuota").change(function () {
-        var monto = $(this).find("option:selected").data("monto");
-        var idCurso = $(this).find("option:selected").data("curso");
-        $("#nuevoMonto").val(monto);
-    });
-});
-
-/*=============================================
-EDITAR PAGO
-=============================================*/
-$(".tablas").on("click", ".btnEditarPago", function () {
-    var id = $(this).attr("id");
-    var datos = new FormData();
-    datos.append("id", id);
-
-    $.ajax({
-        url: "ajax/pagos.ajax.php",
-        method: "POST",
-        data: datos,
-        cache: false,
-        contentType: false,
-        processData: false,
-        dataType: "json",
-        success: function (respuesta) {
-            console.log(respuesta);
-
-            $("#editarCodigo").val(respuesta["codigo"]);
-            $("#editarFecha").val(respuesta["fecha"]);
-            $("#editarHora").val(respuesta["hora"]);
-            $("#editarMonto").val(respuesta["monto"]);
-
-            $("#editarIdEstudiante").val(respuesta["id_estudiante"]);
-            $("#editarIdApoderado").val(respuesta["id_apoderado"]);
-            $("#editarIdCurso").val(respuesta["id_curso"]);
-
-            $("#editarIdUsuario").val(respuesta["id_usuario"]);
-            $("#idPago").val(respuesta["id"]);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
-            console.error("Respuesta del servidor: ", jqXHR.responseText);
-        }
+    $("#nuevoIdCuotas").change(function () {
+        actualizarMontoTotal();
     });
 });
 
