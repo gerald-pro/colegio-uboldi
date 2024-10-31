@@ -9,7 +9,6 @@ class UsuarioControlador
 
 	static public function ctrIngresoUsuario()
 	{
-
 		if (isset($_POST["ingUsuario"])) {
 
 			if (
@@ -19,7 +18,7 @@ class UsuarioControlador
 
 				//$encriptar = crypt($_POST["ingPassword"], '$2a$07$asxx54ahjppf45sd87a5a4dDDGsystemdev$');
 				$encriptar = $_POST["ingPassword"];
-				$tabla = "usuario";
+				$tabla = "usuarios";
 
 				$item = "usuario";
 				$valor = $_POST["ingUsuario"];
@@ -81,7 +80,7 @@ class UsuarioControlador
 			) {
 
 
-				$tabla = "usuario";
+				$tabla = "usuarios";
 
 				//$encriptar = crypt($_POST["NuevaPassword"], '$2a$07$asxx54ahjppf45sd87a5a4dDDGsystemdev$');
 
@@ -160,7 +159,7 @@ class UsuarioControlador
 			if (preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$/', $_POST["EditarUsuario"])) {
 
 
-				$tabla = "usuario";
+				$tabla = "usuarios";
 
 
 				$datos = array(
@@ -230,7 +229,7 @@ class UsuarioControlador
 
 		if (isset($_GET["id"])) {
 
-			$tabla = "usuario";
+			$tabla = "usuarios";
 			$datos = $_GET["id"];
 
 			$respuesta = Usuario::mdlBorrarUsuario($tabla, $datos);

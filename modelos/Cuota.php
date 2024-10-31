@@ -18,6 +18,23 @@ class Cuota
         }
     }
 
+    static public function listarPorApoderado($idApoderado)
+    {
+        $stmt = Conexion::conectar()->prepare("
+            SELECT c.gestion, c.mes, c.monto, c.fecha_vencimiento, p.codigo, concat(cs.nombre, cs.paralelo) as curso, concat(e.nombre, ' ',e.apellidos) as estudiante
+            FROM cuotas c
+            JOIN detalle_pago dp ON dp.id_cuota = c.id
+            JOIN pagos p ON p.id = dp.id_pago
+            JOIN cursos cs on cs.id = p.id_curso
+            JOIN estudiantes e on e.id = p.id_estudiante
+            WHERE p.id_apoderado = :id_apoderado
+            ORDER BY c.fecha_vencimiento ASC
+        ");
+        $stmt->bindParam(":id_apoderado", $idApoderado, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     static public function crear($datos)
     {
         $stmt = Conexion::conectar()->prepare("INSERT INTO cuotas (gestion, mes, monto, fecha_vencimiento) VALUES (:gestion, :mes, :monto, :fecha_vencimiento)");

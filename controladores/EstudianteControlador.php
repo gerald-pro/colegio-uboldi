@@ -84,7 +84,7 @@ class EstudianteControlador
                     "id" => $_POST["idEstudiante"]
                 );
 
-                $respuesta = Estudiante::editar('estudiante', $datos);
+                $respuesta = Estudiante::editar('estudiantes', $datos);
 
                 if ($respuesta == "ok") {
                     $mensaje =  Mensaje::obtenerMensaje(
@@ -119,7 +119,7 @@ class EstudianteControlador
     {
         if (isset($_GET["id"])) {
             $datos = $_GET["id"];
-            $respuesta = Estudiante::eliminar('estudiante', $datos);
+            $respuesta = Estudiante::eliminar('estudiantes', $datos);
 
             if ($respuesta == "ok") {
                 $mensaje =  Mensaje::obtenerMensaje(

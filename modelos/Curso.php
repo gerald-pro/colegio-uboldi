@@ -11,20 +11,40 @@ class Curso
 	static public function listar($item = null, $valor = null)
 	{
 		if ($item != null) {
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM curso WHERE $item = :$item");
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM cursos WHERE $item = :$item");
 			$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
 			$stmt->execute();
 			return $stmt->fetch();
 		} else {
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM curso");
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM cursos");
 			$stmt->execute();
 			return $stmt->fetchAll();
 		}
 	}
 
+	static public function listarConMasEstudiantes()
+    {
+        $stmt = Conexion::conectar()->prepare("
+            SELECT 
+                c.nombre, 
+                c.paralelo, 
+                COUNT(e.id) AS cantidad_estudiantes
+            FROM 
+                cursos c
+            LEFT JOIN 
+                estudiantes e ON e.id_curso = c.id
+            GROUP BY 
+                c.id
+            ORDER BY 
+                cantidad_estudiantes DESC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
 	static public function buscarPorId($id)
 	{
-		$stmt = Conexion::conectar()->prepare("SELECT * FROM curso WHERE id = $id");
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM cursos WHERE id = $id");
 		$stmt->execute();
 		return $stmt->fetch();
 	}
@@ -53,7 +73,7 @@ class Curso
 	static public function editar($datos)
 	{
 		if (isset($datos["nombre"]) && isset($datos["paralelo"]) && isset($datos["id"])) {
-			$stmt = Conexion::conectar()->prepare("UPDATE curso SET nombre = :nombre, paralelo = :paralelo WHERE id = :id");
+			$stmt = Conexion::conectar()->prepare("UPDATE cursos SET nombre = :nombre, paralelo = :paralelo WHERE id = :id");
 			$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
 			$stmt->bindParam(":paralelo", $datos["paralelo"], PDO::PARAM_STR);
 			$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);

@@ -10,13 +10,13 @@ class Apoderado {
 
     static public function listar($item = null, $valor = null){
         if($item !== null){
-            $stmt = Conexion::conectar()->prepare("SELECT * FROM apoderado WHERE $item = :$item");
+            $stmt = Conexion::conectar()->prepare("SELECT * FROM apoderados WHERE $item = :$item");
             $stmt->bindParam(":".$item, $valor, PDO::PARAM_STR);
             $stmt->execute();
             return $stmt->fetch();
 
         }else{
-            $stmt = Conexion::conectar()->prepare("SELECT * FROM apoderado");
+            $stmt = Conexion::conectar()->prepare("SELECT * FROM apoderados");
             $stmt->execute();
             return $stmt->fetchAll();
         }
@@ -24,7 +24,7 @@ class Apoderado {
 
     static public function buscarPorId($id)
 	{
-		$stmt = Conexion::conectar()->prepare("SELECT * FROM apoderado WHERE id = $id");
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM apoderados WHERE id = $id");
 		$stmt->execute();
 		return $stmt->fetch();
 	}
@@ -33,8 +33,8 @@ class Apoderado {
     {
         $stmt = Conexion::conectar()->prepare("
             SELECT a.*
-            FROM apoderado a
-            JOIN estudiante e ON a.id = e.id_apoderado
+            FROM apoderados a
+            JOIN estudiantes e ON a.id = e.id_apoderado
             WHERE e.id = :id_estudiante
         ");
 
@@ -50,7 +50,7 @@ class Apoderado {
 
     static public function crear($datos){
 
-        $stmt = Conexion::conectar()->prepare("INSERT INTO apoderado (nombre, apellido, direccion, telefono, id_usuario) VALUES (:nombre, :apellido, :direccion, :telefono, :id_usuario)");
+        $stmt = Conexion::conectar()->prepare("INSERT INTO apoderados (nombre, apellido, direccion, telefono, id_usuario) VALUES (:nombre, :apellido, :direccion, :telefono, :id_usuario)");
         $stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
         $stmt->bindParam(":apellido", $datos["apellido"], PDO::PARAM_STR);
         $stmt->bindParam(":direccion", $datos["direccion"], PDO::PARAM_STR);
@@ -70,7 +70,7 @@ class Apoderado {
 
     static public function editar($datos){
 
-        $stmt = Conexion::conectar()->prepare("UPDATE apoderado SET nombre = :nombre, apellido = :apellido, Direccion = :direccion, telefono = :telefono, id_usuario = :id_usuario WHERE id = :id");
+        $stmt = Conexion::conectar()->prepare("UPDATE apoderados SET nombre = :nombre, apellido = :apellido, Direccion = :direccion, telefono = :telefono, id_usuario = :id_usuario WHERE id = :id");
         $stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
         $stmt->bindParam(":apellido", $datos["apellido"], PDO::PARAM_STR);
         $stmt->bindParam(":direccion", $datos["direccion"], PDO::PARAM_STR);
@@ -91,7 +91,7 @@ class Apoderado {
 
     static public function eliminar($datos){
 
-        $stmt = Conexion::conectar()->prepare("DELETE FROM apoderado WHERE id = :id");
+        $stmt = Conexion::conectar()->prepare("DELETE FROM apoderados WHERE id = :id");
         $stmt->bindParam(":id", $datos, PDO::PARAM_INT);
 
         if($stmt->execute()){

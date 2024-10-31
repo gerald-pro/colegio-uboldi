@@ -45,12 +45,53 @@
             <?php
             $items = CuotaControlador::listar();
 
+
             foreach ($items as $key => $value) {
+              $mes = 'No identificado';
+              switch ($value["mes"]) {
+                case 1:
+                  $mes = "enero";
+                  break;
+                case 2:
+                  $mes = "febrero";
+                  break;
+                case 3:
+                  $mes = "marzo";
+                  break;
+                case 4:
+                  $mes = "abril";
+                  break;
+                case 5:
+                  $mes = "mayo";
+                  break;
+                case 6:
+                  $mes = "junio";
+                  break;
+                case 7:
+                  $mes = "julio";
+                  break;
+                case 8:
+                  $mes = "agosto";
+                  break;
+                case 9:
+                  $mes = "septiembre";
+                  break;
+                case 10:
+                  $mes = "octubre";
+                  break;
+                case 11:
+                  $mes = "noviembre";
+                  break;
+                case 12:
+                  $mes = "diciembre";
+                  break;
+              }
+
               echo '
                 <tr>
                     <td>' . ($key + 1) . '</td>
                     <td>' . $value["gestion"] . '</td>
-                    <td>' . $value["mes"] . '</td>
+                    <td>' . $mes . '</td>
                     <td>' . $value["monto"] . '</td>
                     <td>' . $value["fecha_vencimiento"] . '</td>
                     <td>
@@ -90,7 +131,21 @@
 
               <div class="col-md-6 form-group">
                 <label for="nuevoMes">Mes</label>
-                <input type="number" class="form-control" id="nuevoMes" name="nuevoMes" required min="1" max="12" step="1" placeholder="Ej. 1 para Enero">
+                <select name="nuevoMes" id="nuevoMes" class="form-control" required>
+                  <option value="">Seleccionar</option>
+                  <option value="1">Enero</option>
+                  <option value="2">Febrero</option>
+                  <option value="3">Marzo</option>
+                  <option value="4">Abril</option>
+                  <option value="5">Mayo</option>
+                  <option value="6">Junio</option>
+                  <option value="7">Julio</option>
+                  <option value="8">Agosto</option>
+                  <option value="9">Septiembre</option>
+                  <option value="10">Octubre</option>
+                  <option value="11">Noviembre</option>
+                  <option value="12">Diciembre</option>
+                </select>
               </div>
 
               <div class="col-md-6 form-group">
@@ -139,7 +194,23 @@
 
               <div class="col-md-6 form-group">
                 <label for="editarMes">Mes</label>
-                <input type="number" class="form-control" id="editarMes" name="editarMes" required min="1" max="12" step="1">
+
+                <select name="editarMes" id="editarMes" class="form-control" required>
+                  <option value="">Seleccionar</option>
+                  <option value="1">Enero</option>
+                  <option value="2">Febrero</option>
+                  <option value="3">Marzo</option>
+                  <option value="4">Abril</option>
+                  <option value="5">Mayo</option>
+                  <option value="6">Junio</option>
+                  <option value="7">Julio</option>
+                  <option value="8">Agosto</option>
+                  <option value="9">Septiembre</option>
+                  <option value="10">Octubre</option>
+                  <option value="11">Noviembre</option>
+                  <option value="12">Diciembre</option>
+                </select>
+
               </div>
 
               <div class="col-md-6 form-group">
