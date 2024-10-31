@@ -18,30 +18,70 @@ class Pago
 		}
 	}
 
+	static public function listarPorPeriodo($fechaInicio, $fechaFin)
+	{
+		$stmt = Conexion::conectar()->prepare("
+            SELECT * FROM pagos 
+            WHERE fecha BETWEEN :fechaInicio AND :fechaFin 
+            ORDER BY fecha ASC
+        ");
+		$stmt->bindParam(":fechaInicio", $fechaInicio, PDO::PARAM_STR);
+		$stmt->bindParam(":fechaFin", $fechaFin, PDO::PARAM_STR);
+		$stmt->execute();
+		return $stmt->fetchAll();
+	}
+
+	static public function listarPorApoderado($idApoderado)
+	{
+		$stmt = Conexion::conectar()->prepare("
+            SELECT * 
+            FROM pagos 
+            WHERE id_apoderado = :id_apoderado
+            ORDER BY fecha DESC
+        ");
+		$stmt->bindParam(":id_apoderado", $idApoderado, PDO::PARAM_INT);
+		$stmt->execute();
+		return $stmt->fetchAll();
+	}
+
+	static public function listarEstudiantesMayorPago()
+	{
+		$stmt = Conexion::conectar()->prepare("
+            SELECT p.codigo as codigo_pago, concat(e.nombre, ' ', e.apellidos) as estudiante, concat(a.nombre, ' ', a.apellido) AS apoderado, p.monto_total AS monto_total
+			FROM pagos p
+			JOIN estudiantes e ON e.id = p.id_estudiante
+			JOIN apoderados a ON a.id = p.id_apoderado
+			ORDER BY monto_total desc
+			limit 5
+        ");
+		$stmt->execute();
+		return $stmt->fetchAll();
+	}
+
 	static public function crear($datos)
-    {
+	{
 		$conexion = Conexion::conectar();
-        $stmt = $conexion->prepare(
-            "INSERT INTO pagos (codigo, monto_total, id_estudiante, id_apoderado, id_curso, id_usuario, id_metodo_pago) 
+		$stmt = $conexion->prepare(
+			"INSERT INTO pagos (codigo, monto_total, id_estudiante, id_apoderado, id_curso, id_usuario, id_metodo_pago) 
             VALUES (:codigo, :monto_total, :id_estudiante, :id_apoderado, :id_curso, :id_usuario, :id_metodo_pago)"
-        );
+		);
 
-        $stmt->bindParam(":codigo", $datos["codigo"], PDO::PARAM_STR);
-        $stmt->bindParam(":monto_total", $datos["monto_total"], PDO::PARAM_STR); // Monto total ahora
-        $stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
-        $stmt->bindParam(":id_apoderado", $datos["id_apoderado"], PDO::PARAM_INT);
-        $stmt->bindParam(":id_curso", $datos["id_curso"], PDO::PARAM_INT);
-        $stmt->bindParam(":id_usuario", $_SESSION["id"], PDO::PARAM_INT);
-        $stmt->bindParam(":id_metodo_pago", $datos["id_metodo_pago"], PDO::PARAM_INT);
+		$stmt->bindParam(":codigo", $datos["codigo"], PDO::PARAM_STR);
+		$stmt->bindParam(":monto_total", $datos["monto_total"], PDO::PARAM_STR); // Monto total ahora
+		$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
+		$stmt->bindParam(":id_apoderado", $datos["id_apoderado"], PDO::PARAM_INT);
+		$stmt->bindParam(":id_curso", $datos["id_curso"], PDO::PARAM_INT);
+		$stmt->bindParam(":id_usuario", $_SESSION["id"], PDO::PARAM_INT);
+		$stmt->bindParam(":id_metodo_pago", $datos["id_metodo_pago"], PDO::PARAM_INT);
 
-        if ($stmt->execute()) {
-            $lastId = $conexion->lastInsertId();
+		if ($stmt->execute()) {
+			$lastId = $conexion->lastInsertId();
 			return $lastId;
-        } else {
+		} else {
 			$error = $stmt->errorInfo();
 			return $error;
-        }
-    }
+		}
+	}
 
 	static public function actualizar($item1, $valor1, $item2, $valor2)
 	{

@@ -63,3 +63,100 @@ if (isset($_POST["idEstudianteReporte"])) {
     }
     exit;
 }
+
+if (isset($_POST["idApoderadoCuota"])) {
+    $pdfContent = ReporteControlador::cuotasPorApoderadoPDF($_POST["idApoderadoCuota"]);
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["fechaInicioPago"]) && isset($_POST["fechaFinPago"])) {
+    $fechaInicio = $_POST["fechaInicioPago"];
+    $fechaFin = $_POST["fechaFinPago"];
+
+    $pdfContent = ReporteControlador::pagosPorPeriodoPDF($fechaInicio, $fechaFin);
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["fechaInicioRegistro"]) && isset($_POST["fechaFinRegistro"])) {
+    $fechaInicio = $_POST["fechaInicioRegistro"];
+    $fechaFin = $_POST["fechaFinRegistro"];
+
+    $pdfContent = ReporteControlador::estudiantesPorFechaRegistroPDF($fechaInicio, $fechaFin);
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["idCursoEstudiantes"])) {
+    $idCurso = $_POST["idCursoEstudiantes"];
+    
+    $pdfContent = ReporteControlador::estudiantesPorCursoPDF($idCurso);
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["estudiantesCuotasPendientes"])) {
+    $pdfContent = ReporteControlador::estudiantesCuotasNoPagadasPDF();
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["cursosMasEstudiantes"])) {
+    $pdfContent = ReporteControlador::cursosConMasEstudiantesPDF();
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["pagosPorApoderado"])) {
+    $idApoderado = $_POST["pagosPorApoderado"];
+    $pdfContent = ReporteControlador::pagosPorApoderadoPDF($idApoderado);
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["estudiantesMayorPago"])) {
+    $pdfContent = ReporteControlador::estudiantesMayorPagoPDF();
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}

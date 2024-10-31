@@ -13,7 +13,7 @@ class CursoControlador
 				preg_match('/^[a-zA-Z0-9 ]+$/', $_POST["nuevoParalelo"])
 			) {
 
-				$tabla = "curso";
+				$tabla = "cursos";
 
 				$datos = array(
 					"nombre" => $_POST["nuevoCurso"],
@@ -137,7 +137,7 @@ class CursoControlador
 	static public function eliminar()
 	{
 		if (isset($_GET["id"])) {
-			$tabla = "curso";
+			$tabla = "cursos";
 			$datos = $_GET["id"];
 			$respuesta = Curso::eliminar($tabla, $datos);
 

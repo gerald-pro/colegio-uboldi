@@ -11,13 +11,13 @@ class Usuario{
 	static public function listar($item = null, $valor = null){
 
 		if($item != null){
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM usuario WHERE $item = :$item");
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM usuarios WHERE $item = :$item");
 			$stmt -> bindParam(":".$item, $valor, PDO::PARAM_STR);
 			$stmt -> execute();
 			return $stmt -> fetch();
 
 		}else{
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM usuario");
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM usuarios");
 			$stmt -> execute();
 			return $stmt -> fetchAll();
 		}
@@ -25,7 +25,7 @@ class Usuario{
 
 	static public function buscarPorId($id)
 	{
-		$stmt = Conexion::conectar()->prepare("SELECT * FROM usuario WHERE id = $id");
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM usuarios WHERE id = $id");
 		$stmt->execute();
 		return $stmt->fetch();
 	}
@@ -55,7 +55,7 @@ class Usuario{
 
 	static public function mdlEditarUsuario($tabla, $datos){
 	
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET usuario = :usuario, password = :password, correo = :correo, fecha = :fecha WHERE usuario = :usuario");
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET usuarios = :usuario, password = :password, correo = :correo, fecha = :fecha WHERE usuarios = :usuario");
 		$stmt -> bindParam(":usuario", $datos["usuario"], PDO::PARAM_STR);
 		$stmt -> bindParam(":password", $datos["password"], PDO::PARAM_STR);
 		$stmt -> bindParam(":correo", $datos["correo"], PDO::PARAM_STR);
