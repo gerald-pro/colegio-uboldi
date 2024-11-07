@@ -129,38 +129,38 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="nuevoNombre">Nombre</label>
-                                <input type="text" class="form-control" id="nuevoNombre" name="nuevoNombre" placeholder="Ingrese Nombre">
+                                <input type="text" class="form-control" id="nuevoNombre" name="nuevoNombre" placeholder="Ingrese Nombre" required>
                                 <input type="hidden" name="id" id="id" required>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="nuevoApellido">Apellido</label>
-                                <input type="text" class="form-control" id="nuevoApellido" name="nuevoApellido" placeholder="Ingrese Apellido">
+                                <input type="text" class="form-control" id="nuevoApellido" name="nuevoApellido" placeholder="Ingrese Apellido" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="nuevaDireccion">Direccion</label>
-                                <input type="mail" class="form-control" id="nuevaDireccion" name="nuevaDireccion" placeholder="Ingrese Direccion">
+                                <input type="mail" class="form-control" id="nuevaDireccion" name="nuevaDireccion" placeholder="Ingrese Direccion" required>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="nuevoTelefono">Telefono</label>
-                                <input type="number" class="form-control" id="nuevoTelefono" name="nuevoTelefono" placeholder="Ingrese Telefono">
+                                <input type="number" class="form-control" id="nuevoTelefono" name="nuevoTelefono" placeholder="Ingrese Telefono" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="nuevoCorreo">Correo</label>
-                                <input type="email" class="form-control" id="nuevoCorreo" name="nuevoCorreo" placeholder="Ingrese Correo">
+                                <input type="email" class="form-control" id="nuevoCorreo" name="nuevoCorreo" placeholder="Ingrese Correo" required>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="nuevaFechaNac">Fecha de nacimiento</label>
-                                <input type="date" class="form-control" id="nuevaFechaNac" name="nuevaFechaNac" placeholder="Ingrese Fecha de nacimiento">
+                                <input type="date" class="form-control" id="nuevaFechaNac" name="nuevaFechaNac" placeholder="Ingrese Fecha de nacimiento" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="nuevoIdCurso">Curso</label>
-                                <select name="nuevoIdCurso" id="nuevoIdCurso" class="form-control">
+                                <select name="nuevoIdCurso" id="nuevoIdCurso" class="form-control" required>
                                     <?php
                                     $cursos = Curso::listar();
                                     foreach ($cursos as $key => $value) {
@@ -172,7 +172,7 @@
 
                             <div class="col-md-6 form-group">
                                 <label for="nuevoIdApoderado">Apoderado</label>
-                                <select name="nuevoIdApoderado" id="nuevoIdApoderado" class="form-control">
+                                <select name="nuevoIdApoderado" id="nuevoIdApoderado" class="form-control" required>
                                     <?php
                                     $apoderados = Apoderado::listar();
                                     foreach ($apoderados as $key => $value) {
@@ -303,33 +303,33 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="editarApellido">Apellido</label>
-                                <input type="text" class="form-control" id="editarApellido" name="editarApellido" placeholder="Ingrese Apellido">
+                                <input type="text" class="form-control" id="editarApellido" name="editarApellido" placeholder="Ingrese Apellido" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="editarDireccion">Direccion</label>
-                                <input type="text" class="form-control" id="editarDireccion" name="editarDireccion" placeholder="Ingrese Direccion">
+                                <input type="text" class="form-control" id="editarDireccion" name="editarDireccion" placeholder="Ingrese Direccion" required>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="editarCorreo">Correo</label>
-                                <input type="email" class="form-control" id="editarCorreo" name="editarCorreo" placeholder="Ingrese Correo">
+                                <input type="email" class="form-control" id="editarCorreo" name="editarCorreo" placeholder="Ingrese Correo" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="editarTelefono">Telefono</label>
-                                <input type="number" class="form-control" id="editarTelefono" name="editarTelefono" placeholder="Ingrese Telefono">
+                                <input type="number" class="form-control" id="editarTelefono" name="editarTelefono" placeholder="Ingrese Telefono" required>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="editarFechaNac">Fecha de nacimiento</label>
-                                <input type="date" class="form-control" id="editarFechaNac" name="editarFechaNac" placeholder="Ingrese fecha de nacimiento">
+                                <input type="date" class="form-control" id="editarFechaNac" name="editarFechaNac" placeholder="Ingrese fecha de nacimiento" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="editarIdCurso">Curso</label>
-                                <select name="editarIdCurso" id="editarIdCurso" class="form-control">
+                                <select name="editarIdCurso" id="editarIdCurso" class="form-control" required>
                                     <?php
                                     $cursos = Curso::listar();
                                     foreach ($cursos as $key => $value) {
@@ -341,7 +341,7 @@
 
                             <div class="col-md-6 form-group">
                                 <label for="editarIdApoderado">Apoderado</label>
-                                <select name="editarIdApoderado" id="editarIdApoderado" class="form-control">
+                                <select name="editarIdApoderado" id="editarIdApoderado" class="form-control" required>
                                     <?php
                                     $apoderados = Apoderado::listar();
                                     foreach ($apoderados as $key => $value) {

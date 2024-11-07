@@ -18,8 +18,10 @@ $(".tablas").on("click", ".btnEditarUsuario", function () {
 		processData: false,
 		dataType: "json",
 		success: function (respuesta) {
+			console.log(respuesta);
+			
 			$("#EditarUsuario").val(respuesta["usuario"]);
-			$("#EditarFecha").val(respuesta["fecha"]);
+			$("#EditarFecha").val(respuesta.fecha_registro.split(" ")[0]);
 			$("#EditarCorreo").val(respuesta["correo"]);
 		},
 		error: function (jqXHR, textStatus, errorThrown) {

@@ -73,65 +73,86 @@ class UsuarioControlador
 	static public function ctrCrearUsuario()
 	{
 		if (isset($_POST["NuevoUsuario"])) {
+			$errores = [];
+			// Validar cada campo individualmente y almacenar mensajes de error si no es válido.
+			$usernameValidation = Validador::validarUsername($_POST["NuevoUsuario"]);
+			if (!$usernameValidation["valido"]) {
+				$errores["usuario"] = $usernameValidation["mensaje"];
+			}
 
-			if (
-				preg_match('/^[a-zA-Z0-9]+$/', $_POST["NuevoUsuario"]) &&
-				preg_match('/^[a-zA-Z0-9]+$/', $_POST["NuevaPassword"])
-			) {
+			$passwordValidation = Validador::validarPassword($_POST["NuevaPassword"]);
+			if (!$passwordValidation["valido"]) {
+				$errores["password"] = $passwordValidation["mensaje"];
+			}
 
+			$correoValidation = Validador::validarCorreo($_POST["NuevoCorreo"]);
+			if (!$correoValidation["valido"]) {
+				$errores["correo"] = $correoValidation["mensaje"];
+			}
 
-				$tabla = "usuarios";
+			$fechaValidation = Validador::validarFecha($_POST["NuevaFecha"]);
+			if (!$fechaValidation["valido"]) {
+				$errores["fecha_registro"] = $fechaValidation["mensaje"];
+			}
 
-				//$encriptar = crypt($_POST["NuevaPassword"], '$2a$07$asxx54ahjppf45sd87a5a4dDDGsystemdev$');
+			// Verificar si hay errores.
+			if (empty($errores)) {
+				$usuario = Usuario::listar('usuario', $_POST["NuevoUsuario"]);
+				$error = null;
 
-				$datos = array(
-					"usuario" => $_POST["NuevoUsuario"],
-					"correo" => $_POST["NuevoCorreo"],
-					"fecha_registro" => $_POST["NuevaFecha"],
-					"password" => $_POST["NuevaPassword"],
-				);
-				var_dump($datos);
+				if ($usuario) {
+					$error = "El nombre de usuario ya existe";
+				}
 
+				$usuario = Usuario::listar('correo', $_POST["NuevoCorreo"]);
+				if ($usuario) {
+					$error = "El correo ingresado ya se ha registrado";
+				}
 
-				$respuesta = Usuario::mdlIngresarUsuario($tabla, $datos);
+				if ($error) {
+					echo Mensaje::obtenerMensaje(
+						"error",
+						"Ocurrió un error",
+						$error,
+						"usuarios"
+					);
+					
+				} else {
+					$datos = array(
+						"usuario" => $_POST["NuevoUsuario"],
+						"correo" => $_POST["NuevoCorreo"],
+						"fecha_registro" => $_POST["NuevaFecha"],
+						"password" => $_POST["NuevaPassword"],
+					);
 
-				if ($respuesta == "ok") {
+					$respuesta = Usuario::mdlIngresarUsuario($datos);
 
-					echo '<script>
-
-                    swal({
-                          type: "success",
-                          title: "El usuario a sido guardado correctamente",
-                          showConfirmButton: true,
-                          confirmButtonText: "Cerrar"
-                          }).then(function(result){
-                                    if (result.value) {
-
-                                    window.location = "usuarios";
-
-                                    }
-                                })
-
-                    </script>';
+					if ($respuesta == "ok") {
+						$mensaje = Mensaje::obtenerMensaje(
+							"success",
+							"El usuario ha sido guardado correctamente",
+							null,
+							"usuarios"
+						);
+					} else {
+						$mensaje = Mensaje::obtenerMensaje(
+							"error",
+							"Ocurrió un error",
+							$respuesta,
+							"usuarios"
+						);
+					}
+					echo $mensaje;
 				}
 			} else {
-
-				echo '<script>
-
-                    swal({
-                          type: "error",
-                          title: "¡El usuario no puede ir vacío o llevar caracteres especiales!",
-                          showConfirmButton: true,
-                          confirmButtonText: "Cerrar"
-                          }).then(function(result){
-                            if (result.value) {
-
-                            window.location = "usuario";
-
-                            }
-                        })
-
-                  </script>';
+				// Si hay errores, mostrarlos en un mensaje de error.
+				$mensaje = Mensaje::obtenerMensaje(
+					"error",
+					"Entrada incorrecta",
+					"Errores: " . implode(", ", $errores),
+					"usuarios"
+				);
+				echo $mensaje;
 			}
 		}
 	}
@@ -153,15 +174,23 @@ class UsuarioControlador
 
 	static public function ctrEditarUsuario()
 	{
-
 		if (isset($_POST["EditarUsuario"])) {
+			$errores = [];
 
-			if (preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$/', $_POST["EditarUsuario"])) {
+			// Validar cada campo individualmente y almacenar mensajes de error si no es válido.
+			$correoValidation = Validador::validarCorreo($_POST["EditarCorreo"]);
+			if (!$correoValidation["valido"]) {
+				$errores["correo"] = $correoValidation["mensaje"];
+			}
 
+			$fechaValidation = Validador::validarFecha($_POST["EditarFecha"]);
+			if (!$fechaValidation["valido"]) {
+				$errores["fecha_registro"] = $fechaValidation["mensaje"];
+			}
 
+			// Verificar si hay errores.
+			if (empty($errores)) {
 				$tabla = "usuarios";
-
-
 				$datos = array(
 					"usuario" => $_POST["EditarUsuario"],
 					"correo" => $_POST["EditarCorreo"],
@@ -171,51 +200,30 @@ class UsuarioControlador
 				$respuesta = Usuario::mdlEditarUsuario($tabla, $datos);
 
 				if ($respuesta == "ok") {
-					echo '<script>
-					swal({
-						  type: "success",
-						  title: "El usuario ha sido editado correctamente",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result){
-									if (result.value) {
-									window.location = "usuarios";
-									}
-								})
-					</script>';
+					$mensaje = Mensaje::obtenerMensaje(
+						"success",
+						"El usuario ha sido editado correctamente",
+						null,
+						"usuarios"
+					);
+				} else {
+					$mensaje = Mensaje::obtenerMensaje(
+						"error",
+						"Ocurrió un error",
+						$respuesta,
+						"usuarios"
+					);
 				}
-				else {
-					echo '<script>
-					swal({
-						  type: "success",
-						  title: "' . $respuesta . '",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result){
-									if (result.value) {
-									window.location = "usuarios";
-									}
-								})
-					</script>';
-				}
+				echo $mensaje;
 			} else {
-
-				echo '<script>
-
-					swal({
-						  type: "error",
-						  title: "¡El nombre no puede ir vacío o llevar caracteres especiales!",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result){
-							if (result.value) {
-
-							window.location = "usuarios";
-
-							}
-						})
-
-			  	</script>';
+				// Si hay errores, mostrarlos en un mensaje de error.
+				$mensaje = Mensaje::obtenerMensaje(
+					"error",
+					"Entrada incorrecta",
+					"Errores: " . implode(", ", $errores),
+					"usuarios"
+				);
+				echo $mensaje;
 			}
 		}
 	}
@@ -226,7 +234,6 @@ class UsuarioControlador
 
 	static public function ctrBorrarUsuario()
 	{
-
 		if (isset($_GET["id"])) {
 
 			$tabla = "usuarios";

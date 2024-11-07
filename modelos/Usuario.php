@@ -34,18 +34,19 @@ class Usuario{
 	REGISTRO DE USUARIO
 	=============================================*/
 
-	static public function mdlIngresarUsuario($tabla, $datos){
+	static public function mdlIngresarUsuario($datos){
 
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (usuario, correo, password, fecha) VALUES (:usuario, :correo, :password, :fecha)");
+		$stmt = Conexion::conectar()->prepare("INSERT INTO usuarios (usuario, correo, password, fecha_registro) VALUES (:usuario, :correo, :password, :fecha_registro)");
 		$stmt->bindParam(":usuario", $datos["usuario"], PDO::PARAM_STR);
 		$stmt->bindParam(":correo", $datos["correo"], PDO::PARAM_STR);
 		$stmt->bindParam(":password", $datos["password"], PDO::PARAM_STR);
-		$stmt->bindParam(":fecha", $datos["fecha"], PDO::PARAM_STR);
+		$stmt->bindParam(":fecha_registro", $datos["fecha_registro"], PDO::PARAM_STR);
 
 		if($stmt->execute()){
 			return "ok";	
 		}else{
-			return "error";
+			$error = $stmt->errorInfo();
+			return $error[2];
 		}
 	}
 
@@ -55,17 +56,17 @@ class Usuario{
 
 	static public function mdlEditarUsuario($tabla, $datos){
 	
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET usuarios = :usuario, password = :password, correo = :correo, fecha = :fecha WHERE usuarios = :usuario");
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET usuario = :usuario, correo = :correo, fecha_registro = :fecha_registro WHERE usuario = :usuario");
 		$stmt -> bindParam(":usuario", $datos["usuario"], PDO::PARAM_STR);
-		$stmt -> bindParam(":password", $datos["password"], PDO::PARAM_STR);
 		$stmt -> bindParam(":correo", $datos["correo"], PDO::PARAM_STR);
-		$stmt -> bindParam(":fecha", $datos["fecha"], PDO::PARAM_STR);
+		$stmt -> bindParam(":fecha_registro", $datos["fecha_registro"], PDO::PARAM_STR);
 		$stmt -> bindParam(":id", $datos["id"], PDO::PARAM_INT);
 
 		if($stmt -> execute()){
 			return "ok";
 		}else{
-			return "error";	
+			$error = $stmt->errorInfo();
+			return $error[2];	
 		}
 	}
 

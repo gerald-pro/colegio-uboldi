@@ -19,15 +19,10 @@
 
     <!-- Main content -->
     <section class="content">
-
         <!-- Default box -->
         <div class="card">
-
             <div class="card-header">
-
-
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAgregarUsuario">Registrar Usuario</button>
-
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -44,9 +39,7 @@
                 <table class="table table-bordered table-hover dataTable dtr-inline tablas" aria-describedby="example2_info">
                     
                     <thead>
-                        
                         <tr>
-                            
                             <th class="sorting sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Motor de renderizado: actívelo para ordenar las columnas de forma descendente">
                                 <font style="vertical-align: inherit;">
                                     <font style="vertical-align: inherit;">#</font>
@@ -77,16 +70,10 @@
                                     <font style="vertical-align: inherit;">Acciones</font>
                                 </font>
                             </th>
-
-
-                            
-
                         </tr>
-
                     </thead>
 
                     <tbody>
-
                         <?php
 
                         $item = null;
@@ -95,12 +82,13 @@
                         $usuarios = UsuarioControlador::listar($item, $valor);
 
                         foreach ($usuarios as $key => $value) {
-
+                            $fechaOriginal = $value["fecha_registro"];
+                            
                             echo ' <tr>
                             <td>' . ($key + 1) . '</td>
                             <td>' . $value["usuario"] . '</td>
                             <td>' . $value["correo"] . '</td>
-                            <td>' . $value["fecha_registro"] . '</td>
+                            <td>' . (new DateTime($fechaOriginal))->format('d-m-Y') . '</td>
                             <td>
                                 <div class="btn-group">
                                 <button class="btn btn-warning btnEditarUsuario" id="' . $value["id"] . '" data-toggle="modal" data-target="#modalEditarUsuario"><i class="fa fa-solid fa-pen" style="color: white;"></i></button>
@@ -165,7 +153,7 @@
                                 <font style="vertical-align: inherit;">correo</font>
                             </font>
                         </label>
-                        <input type="text" class="form-control" id="NuevoCorreo" name="NuevoCorreo" placeholder="Ingrese correo" required>
+                        <input type="email" class="form-control" id="NuevoCorreo" name="NuevoCorreo" placeholder="Ingrese correo" required>
                     </div>
 
                     <div class="form-group">
@@ -229,7 +217,7 @@
                                 <font style="vertical-align: inherit;">correo</font>
                             </font>
                         </label>
-                        <input type="text" class="form-control" id="EditarCorreo" name="EditarCorreo" placeholder="Ingrese correo" value="" required>
+                        <input type="email" class="form-control" id="EditarCorreo" name="EditarCorreo" placeholder="Ingrese correo" value="" required>
                     </div>
 
                     <div class="form-group">
@@ -238,8 +226,7 @@
                                 <font style="vertical-align: inherit;">fecha</font>
                             </font>
                         </label>
-                        <input type="date" class="form-control" id="EditarFecha" name="EditarFecha" placeholder="Ingrese fecha" required>
-                        <input type="hidden" id="fecha" name="fecha">
+                        <input type="date" class="form-control" id="EditarFecha" name="EditarFecha" required>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
