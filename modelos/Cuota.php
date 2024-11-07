@@ -106,11 +106,17 @@ class Cuota
     static public function listarCuotasPendientesPorEstudiante($idEstudiante)
     {
         $stmt = Conexion::conectar()->prepare("
-            SELECT c.*
-            FROM cuotas c
-            LEFT JOIN detalle_pago dp ON c.id = dp.id_cuota
-            LEFT JOIN pagos p ON dp.id_pago = p.id AND p.id_estudiante = :id_estudiante
-            WHERE p.id IS NULL
+            SELECT 
+                c.*
+            FROM 
+                cuotas c
+            WHERE 
+                c.id NOT IN (
+                    SELECT dp.id_cuota
+                    FROM detalle_pago dp
+                    JOIN pagos p ON dp.id_pago = p.id
+                    WHERE p.id_estudiante = :id_estudiante
+                );
             ORDER BY c.fecha_vencimiento ASC
         ");
 
