@@ -62,13 +62,13 @@
                             <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
                                 aria-label="Versión del motor: activar para ordenar columnas de forma ascendente">
                                 <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">Direccion</font>
+                                    <font style="vertical-align: inherit;">Teléfono</font>
                                 </font>
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
                                 aria-label="Calificación CSS: activar para ordenar las columnas de forma ascendente">
                                 <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">Telefono</font>
+                                    <font style="vertical-align: inherit;">Dirección</font>
                                 </font>
                             </th>
 
@@ -121,7 +121,6 @@
     </section>
 </div>
 
-
 <div class="modal fade" id="modalAgregar">
     <div class="modal-dialog">
         <div class="modal-content bg-danger">
@@ -152,7 +151,7 @@
                             </font>
                         </label>
                         <input type="text" class="form-control" id="NuevoApellido" name="NuevoApellido"
-                            placeholder="Ingrese Apellido">
+                            placeholder="Ingrese Apellido" required>
                     </div>
 
                     <div class="form-group">
@@ -162,7 +161,7 @@
                             </font>
                         </label>
                         <input type="text" class="form-control" id="NuevaDireccion" name="NuevaDireccion"
-                            placeholder="Ingrese direccion">
+                            placeholder="Ingrese direccion" required>
                     </div>
 
                     <div class="form-group">
@@ -172,7 +171,7 @@
                             </font>
                         </label>
                         <input type="number" class="form-control" id="NuevoTelefono" name="NuevoTelefono"
-                            placeholder="Ingrese telefono">
+                            placeholder="Ingrese telefono" min="6000000" max="79999999">
                     </div>
                     <div class="form-group">
                         <label>
@@ -180,7 +179,7 @@
                                 <font style="vertical-align: inherit;">Usuario</font>
                             </font>
                         </label>
-                        <select name="NuevoIdUsuario" id="NuevoIdUsuario" class="form-control">
+                        <select name="NuevoIdUsuario" id="NuevoIdUsuario" class="form-control" required>
                             <?php
                             $usuarios = UsuarioControlador::listar(null, null);
 
@@ -208,8 +207,6 @@
     <!-- /.modal-dialog -->
 </div>
 
-
-
 <div class="modal fade" id="modalEditar">
     <div class="modal-dialog">
         <div class="modal-content bg-danger">
@@ -229,8 +226,8 @@
                             </font>
                         </label>
                         <input type="text" class="form-control" id="EditarNombre" name="EditarNombre"
-                            placeholder="Ingrese Nombre">
-                        <input type="hidden" name="IdApoderado" id="IdApoderado" required>
+                            placeholder="Ingrese Nombre" required>
+                        <input type="hidden" name="IdApoderado" id="IdApoderado">
                     </div>
 
                     <div class="form-group">
@@ -240,7 +237,7 @@
                             </font>
                         </label>
                         <input type="text" class="form-control" id="EditarApellido" name="EditarApellido"
-                            placeholder="Ingrese Apellido">
+                            placeholder="Ingrese Apellido" required>
                     </div>
 
                     <div class="form-group">
@@ -250,7 +247,7 @@
                             </font>
                         </label>
                         <input type="text" class="form-control" id="EditarDireccion" name="EditarDireccion"
-                            placeholder="Ingrese direccion">
+                            placeholder="Ingrese direccion" required>
                     </div>
 
                     <div class="form-group">
@@ -259,8 +256,8 @@
                                 <font style="vertical-align: inherit;">telefono</font>
                             </font>
                         </label>
-                        <input type="number" class="form-control" id="EditarTelefono" name="EditarTelefono"
-                            placeholder="Ingrese telefono">
+                        <input type="number" class="form-control" id="EditarTelefono" name="EditarTelefono" min="6000000" max="79999999"
+                            placeholder="Ingrese telefono" required>
                     </div>
                     <div class="form-group">
                         <label>
@@ -268,7 +265,7 @@
                                 <font style="vertical-align: inherit;">Usuario</font>
                             </font>
                         </label>
-                        <select name="EditarIdUsuario" id="EditarIdUsuario" class="form-control">
+                        <select name="EditarIdUsuario" id="EditarIdUsuario" class="form-control" required>
                             <?php
                             $usuarios = UsuarioControlador::listar(null, null);
 
@@ -295,8 +292,8 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<?php
-$borrarCliente = new ApoderadoControlador();
-$borrarCliente->eliminar();
 
+<?php
+    $borrarCliente = new ApoderadoControlador();
+    $borrarCliente->eliminar();
 ?>

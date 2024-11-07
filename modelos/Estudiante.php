@@ -24,9 +24,9 @@ class Estudiante
         }
     }
 
-    static public function editar($tabla, $datos)
+    static public function editar($datos)
     {
-        $stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre = :nombre, apellidos = :apellidos, direccion = :direccion, 
+        $stmt = Conexion::conectar()->prepare("UPDATE estudiantes SET nombre = :nombre, apellidos = :apellidos, direccion = :direccion, 
                                                 fecha_nacimiento = :fecha_nacimiento, correo = :correo, telefono = :telefono, id_curso = :id_curso, id_apoderado = :id_apoderado 
                                                 WHERE id = :id");
         $stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);

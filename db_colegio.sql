@@ -6,8 +6,8 @@ SET time_zone = "+00:00";
 -- Tabla: usuarios
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario VARCHAR(50) NOT NULL,
-    correo VARCHAR(50) NOT NULL,
+    usuario VARCHAR(50) NOT NULL UNIQUE,
+    correo VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(300) NOT NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -37,7 +37,7 @@ CREATE TABLE estudiantes (
     apellidos VARCHAR(100) NOT NULL,
     direccion VARCHAR(100) NOT NULL,
     fecha_nacimiento DATE NOT NULL,
-    correo VARCHAR(50) NOT NULL,
+    correo VARCHAR(50) NOT NULL UNIQUE UNIQUE,
     telefono VARCHAR(15) NOT NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
