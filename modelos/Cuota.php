@@ -125,6 +125,70 @@ class Cuota
         return $stmt->fetchAll();
     }
 
+    static public function cuotasPendientesDetalladoPorEstudiante($idEstudiante)
+    {
+        $stmt = Conexion::conectar()->prepare("
+            SELECT 
+                CONCAT(e.nombre, ' ', e.apellidos) AS estudiante,
+                CONCAT(c.nombre, c.paralelo) AS curso,
+                ccuotas.gestion,
+                ccuotas.mes,
+                ccuotas.fecha_vencimiento,
+                ccuotas.monto AS monto_cuota
+            FROM 
+                estudiantes e
+            JOIN 
+                cursos c ON e.id_curso = c.id
+            JOIN 
+                cuotas ccuotas ON NOT EXISTS (
+                    SELECT 1 
+                    FROM detalle_pago dp 
+                    JOIN pagos p ON dp.id_pago = p.id 
+                    WHERE p.id_estudiante = e.id AND dp.id_cuota = ccuotas.id
+                )
+            WHERE 
+                e.id = :id_estudiante
+            ORDER BY ccuotas.fecha_vencimiento ASC
+        ");
+
+        $stmt->bindParam(":id_estudiante", $idEstudiante, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    static public function cuotasPendientesPorPeriodo($fechaInicio, $fechaFin)
+    {
+        $stmt = Conexion::conectar()->prepare("
+        SELECT 
+            e.id, 
+            CONCAT(e.nombre, ' ', e.apellidos) AS estudiante,
+            CONCAT(c.nombre, c.paralelo) AS curso,
+            ccuotas.gestion,
+            ccuotas.mes,
+            ccuotas.fecha_vencimiento,
+            ccuotas.monto AS monto_cuota
+        FROM 
+            estudiantes e
+        JOIN 
+            cursos c ON e.id_curso = c.id
+        JOIN 
+            cuotas ccuotas ON NOT EXISTS (
+                SELECT 1 
+                FROM detalle_pago dp 
+                JOIN pagos p ON dp.id_pago = p.id 
+                WHERE p.id_estudiante = e.id AND dp.id_cuota = ccuotas.id
+            )
+        WHERE 
+            ccuotas.fecha_vencimiento BETWEEN :fechaInicio AND :fechaFin
+        ORDER BY 
+            e.nombre, e.apellidos, ccuotas.fecha_vencimiento;");
+
+        $stmt->bindParam(":fechaInicio", $fechaInicio, PDO::PARAM_STR);
+        $stmt->bindParam(":fechaFin", $fechaFin, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     static public function listarCuotasPorPago($idPago)
     {
         $stmt = Conexion::conectar()->prepare("

@@ -6,7 +6,7 @@ $(document).ready(function () {
             $.ajax({
                 url: 'ajax/reportes.ajax.php',
                 method: 'POST',
-                data: { idEstudiante: idEstudiante },
+                data: { idEstudiante: idEstudiante, historialPagos: true },
                 success: function (response) {
                     $('#contenidoReporte').html(response); // Colocar el contenido en el modal
                     $('#modalReporte').modal('show'); // Mostrar el modal
@@ -228,6 +228,92 @@ function generarEstudiantesCuotasPendientesPDF() {
             console.error("Error al generar el PDF:", error);
         }
     });
+}
+
+function generarCuotasPendientesPorEstudiantePDF() {
+    var idEstudiante = $('#idEstudianteCuotasPendientes').val();
+
+    if (idCurso) {
+        $.ajax({
+            url: 'ajax/reportes.ajax.php',
+            method: 'POST',
+            data: { idEstudiante: idEstudiante, cuotasPendientes: true },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (response) {
+                var blob = new Blob([response], { type: 'application/pdf' });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'reporte_estudiantes_cuotas_pendientes.pdf';
+                link.click();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error al generar el PDF:", error);
+            }
+        });
+
+    } else {
+        alert('Seleccione un estudianted para generar el reporte.');
+    }
+}
+
+function generarEstudiantesDeudoresPorCursoPDF() {
+    var idCurso = $('#idCursoDeudores').val();
+
+    if (idCurso) {
+        $.ajax({
+            url: 'ajax/reportes.ajax.php',
+            method: 'POST',
+            data: { estudiantesDeudoresCurso: idCurso },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (response) {
+                var blob = new Blob([response], { type: 'application/pdf' });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'reporte_estudiantes_cuotas_pendientes.pdf';
+                link.click();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error al generar el PDF:", error);
+            }
+        });
+
+    } else {
+        alert('Seleccione un curso para generar el reporte.');
+    }
+}
+
+function generarCuotasPendientesPorPeriodoPDF() {
+    var fechaInicio = $('#fechaInicioCuotasPendientes').val();
+    var fechaFin = $('#fechaFinCuotasPendientes').val();
+
+
+    if (idCurso) {
+        $.ajax({
+            url: 'ajax/reportes.ajax.php',
+            method: 'POST',
+            data: { fechaInicio: fechaInicio, fechaFin: fechaFin, cuotasPendientes: true },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (response) {
+                var blob = new Blob([response], { type: 'application/pdf' });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'reporte_estudiantes_cuotas_pendientes.pdf';
+                link.click();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error al generar el PDF:", error);
+            }
+        });
+
+    } else {
+        alert('Seleccione un el periodo de tiempo para generar el reporte.');
+    }
 }
 
 function generarCursosConMasEstudiantesPDF() {

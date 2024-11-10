@@ -131,7 +131,7 @@
 
               <div class="col-md-6 form-group">
                 <label for="nuevoMes">Mes</label>
-                <select name="nuevoMes" id="nuevoMes" class="form-control" required>
+                <select name="nuevoMes" id="nuevoMes" class="form-control select2" required>
                   <option value="">Seleccionar</option>
                   <option value="1">Enero</option>
                   <option value="2">Febrero</option>
@@ -195,7 +195,7 @@
               <div class="col-md-6 form-group">
                 <label for="editarMes">Mes</label>
 
-                <select name="editarMes" id="editarMes" class="form-control" required>
+                <select name="editarMes" id="editarMes" class="form-control select2" required>
                   <option value="">Seleccionar</option>
                   <option value="1">Enero</option>
                   <option value="2">Febrero</option>

@@ -17,6 +17,7 @@
 
     <section class="content">
         <div class="row">
+            <!-- Pagos por estudiante -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
@@ -27,7 +28,7 @@
                             <div class="form-row align-items-center">
                                 <!-- Select del estudiante -->
                                 <div class="input-group">
-                                    <select class="form-control" id="idEstudiante" name="idEstudiante" required>
+                                    <select class="form-control select2" id="idEstudiante" name="idEstudiante" required>
                                         <option value="">Seleccione un estudiante</option>
                                         <?php
                                         $estudiantes = Estudiante::listar();
@@ -50,6 +51,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Estudiantes por apoderado -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
@@ -60,7 +63,7 @@
                             <div class="form-row align-items-center">
                                 <!-- Select del estudiante -->
                                 <div class="input-group">
-                                    <select class="form-control" id="idApoderado" name="idApoderado" required>
+                                    <select class="form-control select2" id="idApoderado" name="idApoderado" required>
                                         <option value="">Seleccione un apoderado</option>
                                         <?php
                                         $apoderados = Apoderado::listar();
@@ -80,6 +83,7 @@
                 </div>
             </div>
 
+            <!-- Cuotas por apoderado -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
@@ -89,7 +93,7 @@
                         <form id="formCuotasApoderado" method="post">
                             <div class="form-row align-items-center">
                                 <div class="input-group">
-                                    <select class="form-control" id="idApoderadoCuota" name="idApoderadoCuota" required>
+                                    <select class="form-control select2" id="idApoderadoCuota" name="idApoderadoCuota" required>
                                         <option value="">Seleccione un apoderado</option>
                                         <?php
                                         $apoderados = Apoderado::listar();
@@ -108,6 +112,7 @@
                 </div>
             </div>
 
+            <!-- Pagos realizados por período -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
@@ -131,6 +136,7 @@
                 </div>
             </div>
 
+            <!-- Estudiantes por fecha de registro -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
@@ -154,6 +160,7 @@
                 </div>
             </div>
 
+            <!-- Estudiantes por curso -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
@@ -163,7 +170,7 @@
                         <form id="formReporteCurso" method="post">
                             <div class="form-row align-items-center">
                                 <div class="input-group">
-                                    <select class="form-control" id="idCurso" name="idCurso" required>
+                                    <select class="form-control select2" id="idCurso" name="idCurso" required>
                                         <option value="">Seleccione un curso</option>
                                         <?php
                                         $cursos = Curso::listar();
@@ -182,6 +189,7 @@
                 </div>
             </div>
 
+            <!-- Reporte de estudiantes con cuotas no pagadas -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
@@ -193,6 +201,89 @@
                 </div>
             </div>
 
+            <!-- Cuotas pendientes por estudiante -->
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Cuotas pendientes por estudiante</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="formReporteCurso" method="post">
+                            <div class="form-row align-items-center">
+                                <div class="input-group">
+                                    <select class="form-control select2" id="idEstudianteCuotasPendientes" name="idEstudianteCuotasPendientes" required>
+                                        <option value="">Seleccione un estudiante</option>
+                                        <?php
+                                        $estudiantes = Estudiante::listar();
+                                        foreach ($estudiantes as $item) {
+                                            echo "<option value='{$item['id']}'>{$item['nombre']} {$item['apellido']}</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-success" onclick="generarCuotasPendientesPorEstudiantePDF()"><i class="fa fa-download" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reporte de cuotas pendientes por periodo -->
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Reporte de estudiantes deudores por curso</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="formReporteCurso" method="post">
+                            <div class="form-row align-items-center">
+                                <div class="input-group">
+                                    <select class="form-control select2" id="idCursoDeudores" name="idCursoDeudores" required>
+                                        <option value="">Seleccione un curso</option>
+                                        <?php
+                                        $cursos = Curso::listar();
+                                        foreach ($cursos as $curso) {
+                                            echo "<option value='{$curso['id']}'>{$curso['nombre']} - {$curso['paralelo']}</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-success" onclick="generarEstudiantesDeudoresPorCursoPDF()"><i class="fa fa-download" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reporte de deudores por período -->
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Deudaores por período</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="formReportePeriodo" method="post">
+                            <div class="form-row align-items-center">
+                                <div class="col">
+                                    <input type="date" class="form-control" id="fechaInicioCuotasPendientes" name="fechaInicioCuotasPendientes" required placeholder="Fecha Inicio">
+                                </div>
+                                <div class="col">
+                                    <input type="date" class="form-control" id="fechaFinCuotasPendientes" name="fechaFinCuotasPendientes" required placeholder="Fecha Fin">
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-success" onclick="generarCuotasPendientesPorPeriodoPDF()"><i class="fa fa-download" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reporte de cursos con mayor número de estudiantes -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
@@ -204,6 +295,7 @@
                 </div>
             </div>
 
+            <!-- Reporte de pagos por apoderado -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
@@ -232,6 +324,7 @@
                 </div>
             </div>
 
+            <!-- Estudiantes con mayor monto de pago -->
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">

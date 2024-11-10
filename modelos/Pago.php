@@ -20,6 +20,8 @@ class Pago
 
 	static public function listarPorPeriodo($fechaInicio, $fechaFin)
 	{
+		$fechaFin = date('Y-m-d', strtotime($fechaFin . ' +1 day'));
+
 		$stmt = Conexion::conectar()->prepare("
             SELECT * FROM pagos 
             WHERE fecha BETWEEN :fechaInicio AND :fechaFin 

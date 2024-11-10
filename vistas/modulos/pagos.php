@@ -120,7 +120,7 @@
 
                             <div class="col-md-6 form-group">
                                 <label for="nuevoIdEstudiante">Estudiante</label>
-                                <select name="nuevoIdEstudiante" id="nuevoIdEstudiante" class="form-control" required>
+                                <select name="nuevoIdEstudiante" id="nuevoIdEstudiante" class="form-control select2" required>
                                     <option value="">Seleccionar</option>
                                     <?php
                                     $estudiantes = Estudiante::listar();

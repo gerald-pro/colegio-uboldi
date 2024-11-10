@@ -8,6 +8,55 @@ require_once("../modelos/Apoderado.php");
 
 class ReporteControlador
 {
+    private static function configurarCabeceraPDF($pdf, $titulo)
+    {
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->AddPage();
+        $pdf->SetFont('helvetica', '', 11);
+
+        // Logo
+        $logoPath = '../vistas/assets/images/colegio-uboldi.jpg';
+        if (file_exists($logoPath)) {
+            $pdf->Image($logoPath, 10, 7, 23, 27, 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        } else {
+            error_log('El archivo de logo no se encuentra en la ruta especificada: ' . $logoPath);
+        }
+
+        // Información del colegio
+        $pdf->MultiCell(
+            80,
+            16,
+            "Colegio M. Uboldi\n" .
+                "NIT: 14495733\n" .
+                "Dirección: Santa Cruz de la Sierra",
+            0,
+            "L",
+            false,
+            1,
+            40
+        );
+
+        // Fecha de emisión
+        $pdf->MultiCell(
+            80,
+            16,
+            "Fecha de emisión: " . date("Y/m/d") . "\n" .
+                "ubaldo.colegio@gmail.com",
+            0,
+            "L",
+            false,
+            1,
+            120,
+            6
+        );
+
+        // Título
+        $pdf->SetFont('helvetica', 'B', 15);
+        $pdf->SetY(30);
+        $pdf->Cell(0, 18, $titulo, 0, 1, 'C');
+    }
+
     static public function historialPagosEstudiante($idEstudiante = null)
     {
         if ($idEstudiante !== null) {
@@ -25,90 +74,52 @@ class ReporteControlador
     static public function historialPagosEstudiantePDF($idEstudiante)
     {
         $datos = self::historialPagosEstudiante($idEstudiante);
-        if ($datos) {
-            $pdf = new TCPDF();
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
-            $pdf->AddPage();
 
-            $pdf->SetFont('helvetica', '', 11);
-            $pdf->MultiCell(
-                80,
-                16,
-                "Colegio M. Uboldi\n" .
-                    "NIT: 14495733\n" .
-                    "Dirección: Santa Cruz de la Sierra",
-                0,
-                "L",
-                false,
-                1,
-            );
+        $pdf = new TCPDF();
+        self::configurarCabeceraPDF($pdf, 'HISTORIAL DE PAGOS');
+        $pdf->SetFont('helvetica', '', 12);
 
-            $pdf->MultiCell(
-                80,
-                16,
-                "Fecha: " . date("Y/m/d") . "\n" .
-                    "uboldi.colegio@gmail.com",
-                0,
-                "L",
-                false,
-                1,
-                100,
-                10
-            );
+        $pdf->Cell(0, 6, 'Estudiante: ' . $datos['estudiante']['nombre'] . ' ' . $datos['estudiante']['apellidos'], 0, 1);
+        $pdf->Cell(0, 6, 'Correo: ' . $datos['estudiante']['correo'], 0, 1);
+        $pdf->Cell(0, 6, 'Telf: ' . $datos['estudiante']['telefono'], 0, 1);
 
-            $pdf->SetFont('helvetica', 'B', 15);
+        $pdf->SetY(72);
+        $pdf->SetFont('helvetica', '', 11);
+        // Tabla de pagos
+        $pdf->Cell(24, 8, 'Código', 1, '', "C");
+        $pdf->Cell(33, 8, 'Fecha', 1, '', "C");
+        $pdf->Cell(40, 8, 'Apoderado', 1, '', "C");
+        $pdf->Cell(40, 8, 'Usuario', 1, '', "C");
+        /* $pdf->Cell(18, 8, 'Gestión', 1, '', "C"); */
+        $pdf->Cell(15, 8, 'Curso', 1, '', "C");
+        $pdf->Cell(30, 8, 'Monto total (bs)', 1, '', "C");
+        $pdf->Ln();
 
-            // Título del reporte
-            $pdf->Cell(0, 18, 'HISTORIAL DE PAGOS', 0, 1, 'C');
-
-            $pdf->SetFont('helvetica', '', 12);
-            // Información del estudiante
-            $pdf->Cell(0, 6, 'Estudiante: ' . $datos['estudiante']['nombre'] . ' ' . $datos['estudiante']['apellidos'], 0, 1);
-            $pdf->Cell(0, 6, 'Correo: ' . $datos['estudiante']['correo'], 0, 1);
-            $pdf->Cell(0, 6, 'Telf: ' . $datos['estudiante']['telefono'], 0, 1);
-
-            $pdf->SetY(72);
-            $pdf->SetFont('helvetica', '', 11);
-            // Tabla de pagos
-            $pdf->Cell(24, 8, 'Código', 1, '', "C");
-            $pdf->Cell(33, 8, 'Fecha', 1, '', "C");
-            $pdf->Cell(40, 8, 'Apoderado', 1, '', "C");
-            $pdf->Cell(40, 8, 'Usuario', 1, '', "C");
-            /* $pdf->Cell(18, 8, 'Gestión', 1, '', "C"); */
-            $pdf->Cell(15, 8, 'Curso', 1, '', "C");
-            $pdf->Cell(30, 8, 'Monto total (bs)', 1, '', "C");
-            $pdf->Ln();
-
-
+        if ($datos['pagos']) {
             foreach ($datos['pagos'] as $pago) {
-                try {
-                    $idCurso = $pago['id_curso'];
+                $idCurso = $pago['id_curso'];
 
-                    $apoderado = Apoderado::buscarPorId($pago['id_apoderado']);
-                    $usuario = Usuario::buscarPorId($pago['id_usuario']);
-                    $curso = Curso::buscarPorId($idCurso);
+                $apoderado = Apoderado::buscarPorId($pago['id_apoderado']);
+                $usuario = Usuario::buscarPorId($pago['id_usuario']);
+                $curso = Curso::buscarPorId($idCurso);
 
-                    $fecha = date_create($pago["fecha"]);
-                    $fechaFormateada = date_format($fecha, "d/m/y H:i");
+                $fecha = date_create($pago["fecha"]);
+                $fechaFormateada = date_format($fecha, "d/m/y H:i");
 
-                    $pdf->Cell(24, 8, $pago['codigo'], 1);
-                    $pdf->Cell(33, 8, $fechaFormateada, 1);
-                    $pdf->Cell(40, 8, $apoderado['nombre'] . " " . $apoderado['apellido'], 1, '', 'L');
-                    $pdf->Cell(40, 8, $usuario['usuario'], 1, '', 'L');
-                    /* $pdf->Cell(18, 8, $cuota['gestion'], 1, '', 'R'); */
-                    $pdf->Cell(15, 8, $curso['nombre'] . " " . $curso['paralelo'], 1, '', 'R');
-                    $pdf->Cell(30, 8, $pago['monto_total'], 1, '', 'R');
-                    $pdf->Ln();
-                } catch (\Throwable $th) {
-                    $message = $th;
-                }
+                $pdf->Cell(24, 8, $pago['codigo'], 1);
+                $pdf->Cell(33, 8, $fechaFormateada, 1);
+                $pdf->Cell(40, 8, $apoderado['nombre'] . " " . $apoderado['apellido'], 1, '', 'L');
+                $pdf->Cell(40, 8, $usuario['usuario'], 1, '', 'L');
+                /* $pdf->Cell(18, 8, $cuota['gestion'], 1, '', 'R'); */
+                $pdf->Cell(15, 8, $curso['nombre'] . " " . $curso['paralelo'], 1, '', 'R');
+                $pdf->Cell(30, 8, $pago['monto_total'], 1, '', 'R');
+                $pdf->Ln();
             }
-
-            return $pdf->Output('', 'S');
         } else {
-            echo 'No se encontraron datos para el estudiante seleccionado.';
+            $pdf->Cell(182, 8, 'No se encontraron pagos registrados', 1, 0, "C");
         }
+
+        return $pdf->Output('', 'S');
     }
 
     static public function estudiantesPorApoderadoPDF($idApoderado)
@@ -116,40 +127,8 @@ class ReporteControlador
         $apoderado = Apoderado::buscarPorId($idApoderado);
         $estudiantes = Estudiante::listarPorApoderado($idApoderado);
 
-
         $pdf = new TCPDF();
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->MultiCell(
-            80,
-            16,
-            "Colegio M. Uboldi\n" .
-                "NIT: 14495733\n" .
-                "Dirección: Santa Cruz de la Sierra",
-            0,
-            "L",
-            false,
-            1
-        );
-
-        $pdf->MultiCell(
-            80,
-            16,
-            "Fecha: " . date("Y/m/d") . "\n" .
-                "uboldi.colegio@gmail.com",
-            0,
-            "L",
-            false,
-            1,
-            100,
-            10
-        );
-
-        $pdf->SetFont('helvetica', 'B', 15);
-        $pdf->Cell(0, 18, 'REPORTE DE ESTUDIANTES POR APODERADO', 0, 1, 'C');
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE ESTUDIANTES POR APODERADO');
 
         $pdf->SetFont('helvetica', '', 12);
         $pdf->Cell(0, 6, 'Apoderado: ' . $apoderado['nombre'] . ' ' . $apoderado['apellido'], 0, 1);
@@ -185,40 +164,8 @@ class ReporteControlador
         $apoderado = Apoderado::buscarPorId($idApoderado);
         $cuotas = Cuota::listarPorApoderado($idApoderado); // Método en el modelo Cuota
 
-
         $pdf = new TCPDF();
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->MultiCell(
-            80,
-            16,
-            "Colegio M. Uboldi\n" .
-                "NIT: 14495733\n" .
-                "Dirección: Santa Cruz de la Sierra",
-            0,
-            "L",
-            false,
-            1
-        );
-
-        $pdf->MultiCell(
-            80,
-            16,
-            "Fecha: " . date("Y/m/d") . "\n" .
-                "uboldi.colegio@gmail.com",
-            0,
-            "L",
-            false,
-            1,
-            100,
-            10
-        );
-
-        $pdf->SetFont('helvetica', 'B', 15);
-        $pdf->Cell(0, 18, 'REPORTE DE CUOTAS POR APODERADO', 0, 1, 'C');
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE CUOTAS POR APODERADO');
 
         $pdf->SetFont('helvetica', '', 12);
         $pdf->Cell(0, 6, 'Apoderado: ' . $apoderado['nombre'] . ' ' . $apoderado['apellido'], 0, 1);
@@ -298,45 +245,13 @@ class ReporteControlador
     {
         $pagos = Pago::listarPorPeriodo($fechaInicio, $fechaFin); // Método en el modelo Pago
 
-
         $pdf = new TCPDF();
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->MultiCell(
-            80,
-            16,
-            "Colegio M. Uboldi\n" .
-                "NIT: 14495733\n" .
-                "Dirección: Santa Cruz de la Sierra",
-            0,
-            "L",
-            false,
-            1
-        );
-
-        $pdf->MultiCell(
-            80,
-            16,
-            "Fecha de emisión: " . date("Y/m/d") . "\n" .
-                "ubaldo.colegio@gmail.com",
-            0,
-            "L",
-            false,
-            1,
-            100,
-            10
-        );
-
-        $pdf->SetFont('helvetica', 'B', 15);
-        $pdf->Cell(0, 18, 'REPORTE DE PAGOS POR PERÍODO', 0, 1, 'C');
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE PAGOS POR PERÍODO');
 
         $pdf->SetFont('helvetica', '', 12);
         $pdf->Cell(0, 6, 'Período: ' . date("d/m/Y", strtotime($fechaInicio)) . ' - ' . date("d/m/Y", strtotime($fechaFin)), 0, 1);
 
-        $pdf->SetY(72);
+        $pdf->SetY(60);
         $pdf->SetFont('helvetica', '', 11);
         $pdf->Cell(20, 8, 'Código', 1, '', "C");
         $pdf->Cell(40, 8, 'Fecha', 1, '', "C");
@@ -344,6 +259,8 @@ class ReporteControlador
         $pdf->Cell(50, 8, 'Apoderado', 1, '', "C");
         $pdf->Cell(25, 8, 'Monto (Bs)', 1, '', "C");
         $pdf->Ln();
+
+        $total = 0;
 
         if ($pagos) {
             foreach ($pagos as $pago) {
@@ -357,7 +274,14 @@ class ReporteControlador
                 $pdf->Cell(50, 8, $apoderado['nombre'] . ' ' . $apoderado['apellido'], 1);
                 $pdf->Cell(25, 8, $pago['monto_total'], 1, '', 'R');
                 $pdf->Ln();
+
+                $total += $pago['monto_total'];
             }
+
+            $pdf->SetFont('helvetica', 'B', 11);
+            $pdf->Cell(160, 8, 'Total', 1, '', 'R');
+            $pdf->Cell(25, 8, $total, 1, '', 'R');
+            $pdf->Ln();
         } else {
             $pdf->Cell(175, 8, 'No se encontraron estudiantes para este apoderado', 0, 0, "C");
         }
@@ -369,40 +293,8 @@ class ReporteControlador
     {
         $estudiantes = Estudiante::listarPorFechaRegistro($fechaInicio, $fechaFin); // Método en el modelo Estudiante
 
-
         $pdf = new TCPDF();
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->MultiCell(
-            80,
-            16,
-            "Colegio M. Uboldi\n" .
-                "NIT: 14495733\n" .
-                "Dirección: Santa Cruz de la Sierra",
-            0,
-            "L",
-            false,
-            1
-        );
-
-        $pdf->MultiCell(
-            80,
-            16,
-            "Fecha de emisión: " . date("Y/m/d") . "\n" .
-                "ubaldo.colegio@gmail.com",
-            0,
-            "L",
-            false,
-            1,
-            100,
-            10
-        );
-
-        $pdf->SetFont('helvetica', 'B', 15);
-        $pdf->Cell(0, 18, 'REPORTE DE ESTUDIANTES POR FECHA DE REGISTRO', 0, 1, 'C');
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE ESTUDIANTES POR FECHA DE REGISTRO');
 
         $pdf->SetFont('helvetica', '', 12);
         $pdf->Cell(0, 6, 'Período: ' . date("d/m/Y", strtotime($fechaInicio)) . ' - ' . date("d/m/Y", strtotime($fechaFin)), 0, 1);
@@ -435,42 +327,10 @@ class ReporteControlador
     static public function estudiantesPorCursoPDF($idCurso)
     {
         $curso = Curso::buscarPorId($idCurso);
-        $estudiantes = Estudiante::listarPorCurso($idCurso); // Método en el modelo Estudiante
-
+        $estudiantes = Estudiante::listarPorCurso($idCurso);
 
         $pdf = new TCPDF();
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->MultiCell(
-            80,
-            16,
-            "Colegio M. Uboldi\n" .
-                "NIT: 14495733\n" .
-                "Dirección: Santa Cruz de la Sierra",
-            0,
-            "L",
-            false,
-            1
-        );
-
-        $pdf->MultiCell(
-            80,
-            16,
-            "Fecha de emisión: " . date("Y/m/d") . "\n" .
-                "ubaldo.colegio@gmail.com",
-            0,
-            "L",
-            false,
-            1,
-            100,
-            10
-        );
-
-        $pdf->SetFont('helvetica', 'B', 15);
-        $pdf->Cell(0, 18, 'REPORTE DE ESTUDIANTES POR CURSO', 0, 1, 'C');
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE ESTUDIANTES POR CURSO');
         $pdf->SetY(50);
 
         $pdf->SetFont('helvetica', '', 11);
@@ -498,53 +358,52 @@ class ReporteControlador
 
     static public function estudiantesCuotasNoPagadasPDF()
     {
-        $estudiantes = Estudiante::listarConCuotasPendientes(); // Método en el modelo Estudiante
-
+        $estudiantes = Estudiante::listarConCuotasPendientes();
         $pdf = new TCPDF();
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->MultiCell(
-            80,
-            16,
-            "Colegio M. Uboldi\n" .
-                "NIT: 14495733\n" .
-                "Dirección: Santa Cruz de la Sierra",
-            0,
-            "L",
-            false,
-            1
-        );
-
-        $pdf->MultiCell(
-            80,
-            16,
-            "Fecha de emisión: " . date("Y/m/d") . "\n" .
-                "ubaldo.colegio@gmail.com",
-            0,
-            "L",
-            false,
-            1,
-            100,
-            10
-        );
-
-        $pdf->SetFont('helvetica', 'B', 15);
-        $pdf->Cell(0, 18, 'REPORTE DE ESTUDIANTES CON CUOTAS NO PAGADAS', 0, 1, 'C');
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE ESTUDIANTES CON CUOTAS NO PAGADAS');
 
         $pdf->SetY(55);
         $pdf->SetFont('helvetica', '', 11);
         $pdf->Cell(55, 8, 'Estudiante', 1, '', "C");
+        $pdf->Cell(30, 8, 'Curso', 1, '', "C");
         $pdf->Cell(38, 8, 'Cuotas Pendientes', 1, '', "C");
-        $pdf->Cell(30, 8, 'Monto Total (Bs)', 1, '', "C");
+        $pdf->Cell(38, 8, 'Monto Total (Bs)', 1, '', "C");
         $pdf->Ln();
 
         if ($estudiantes) {
             foreach ($estudiantes as $estudiante) {
                 $pdf->Cell(55, 8, $estudiante['nombre'] . " " . $estudiante['apellidos'], 1);
+                $pdf->Cell(30, 8, $estudiante['curso'], 1, '', 'C');
                 $pdf->Cell(38, 8, $estudiante['cuotas_pendientes'], 1, '', 'C');
-                $pdf->Cell(30, 8, number_format($estudiante['monto_total_pendiente'], 2), 1, '', 'R');
+                $pdf->Cell(38, 8, number_format($estudiante['monto_total_pendiente'], 2), 1, '', 'R');
+                $pdf->Ln();
+            }
+        } else {
+            $pdf->Cell(175, 8, 'No se encontraron estudiantes con cuotas pendientes.', 0, 0, "C");
+        }
+        return $pdf->Output('', 'S');
+    }
+
+    static public function estudiantesDeudoresPorCursoPDF($idCurso)
+    {
+        $estudiantes = Estudiante::listarConCuotasPendientesPorCurso($idCurso);
+        $pdf = new TCPDF();
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE DEUDORES POR CURSO');
+
+        $pdf->SetY(55);
+        $pdf->SetFont('helvetica', '', 11);
+        $pdf->Cell(55, 8, 'Estudiante', 1, '', "C");
+        $pdf->Cell(34, 8, 'Curso', 1, '', "C");
+        $pdf->Cell(38, 8, 'Cuotas Pendientes', 1, '', "C");
+        $pdf->Cell(38, 8, 'Monto Total (Bs)', 1, '', "C");
+        $pdf->Ln();
+
+        if ($estudiantes) {
+            foreach ($estudiantes as $estudiante) {
+                $pdf->Cell(55, 8, $estudiante['nombre'] . " " . $estudiante['apellidos'], 1);
+                $pdf->Cell(34, 8, $estudiante['curso'], 1, '', 'C');
+                $pdf->Cell(38, 8, $estudiante['cuotas_pendientes'], 1, '', 'C');
+                $pdf->Cell(38, 8, number_format($estudiante['monto_total_pendiente'], 2), 1, '', 'R');
                 $pdf->Ln();
             }
         } else {
@@ -555,41 +414,9 @@ class ReporteControlador
 
     static public function cursosConMasEstudiantesPDF()
     {
-        $cursos = Curso::listarConMasEstudiantes(); // Método en el modelo Curso
-
+        $cursos = Curso::listarConMasEstudiantes();
         $pdf = new TCPDF();
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->MultiCell(
-            80,
-            16,
-            "Colegio M. Uboldi\n" .
-                "NIT: 14495733\n" .
-                "Dirección: Santa Cruz de la Sierra",
-            0,
-            "L",
-            false,
-            1
-        );
-
-        $pdf->MultiCell(
-            80,
-            16,
-            "Fecha de emisión: " . date("Y/m/d") . "\n" .
-                "ubaldo.colegio@gmail.com",
-            0,
-            "L",
-            false,
-            1,
-            100,
-            10
-        );
-
-        $pdf->SetFont('helvetica', 'B', 15);
-        $pdf->Cell(0, 18, 'REPORTE DE CURSOS CON MAYOR NÚMERO DE ESTUDIANTES', 0, 1, 'C');
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE CURSOS CON MAYOR NÚMERO DE ESTUDIANTES');
 
         $pdf->SetY(55);
         $pdf->SetFont('helvetica', '', 11);
@@ -617,40 +444,8 @@ class ReporteControlador
         $pagos = Pago::listarPorApoderado($idApoderado);
         $apoderado = Apoderado::buscarPorId($idApoderado);
 
-
         $pdf = new TCPDF();
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->MultiCell(
-            80,
-            16,
-            "Colegio M. Uboldi\n" .
-                "NIT: 14495733\n" .
-                "Dirección: Santa Cruz de la Sierra",
-            0,
-            "L",
-            false,
-            1
-        );
-
-        $pdf->MultiCell(
-            80,
-            16,
-            "Fecha de emisión: " . date("Y/m/d") . "\n" .
-                "ubaldo.colegio@gmail.com",
-            0,
-            "L",
-            false,
-            1,
-            100,
-            10
-        );
-
-        $pdf->SetFont('helvetica', 'B', 15);
-        $pdf->Cell(0, 18, 'REPORTE DE PAGOS POR APODERADO', 0, 1, 'C');
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE PAGOS POR APODERADO');
 
         $pdf->SetFont('helvetica', '', 12);
         $pdf->Cell(0, 6, 'Apoderado: ' . $apoderado['nombre'] . ' ' . $apoderado['apellido'], 0, 1);
@@ -689,38 +484,7 @@ class ReporteControlador
         $estudiantes = Pago::listarEstudiantesMayorPago();
 
         $pdf = new TCPDF();
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->AddPage();
-
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->MultiCell(
-            80,
-            16,
-            "Colegio M. Uboldi\n" .
-                "NIT: 14495733\n" .
-                "Dirección: Santa Cruz de la Sierra",
-            0,
-            "L",
-            false,
-            1
-        );
-
-        $pdf->MultiCell(
-            80,
-            16,
-            "Fecha de emisión: " . date("Y/m/d") . "\n" .
-                "ubaldo.colegio@gmail.com",
-            0,
-            "L",
-            false,
-            1,
-            100,
-            10
-        );
-
-        $pdf->SetFont('helvetica', 'B', 15);
-        $pdf->Cell(0, 18, 'REPORTE DE ESTUDIANTES CON MAYOR MONTO DE PAGO', 0, 1, 'C');
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE ESTUDIANTES CON MAYOR MONTO DE PAGO');
 
         $pdf->SetFont('helvetica', '', 12);
         $pdf->SetY(60);
@@ -744,6 +508,76 @@ class ReporteControlador
             $pdf->Cell(175, 8, 'No se encontraron datos de estudiantes con pagos registrados.', 0, 0, "C");
         }
 
+        return $pdf->Output('', 'S');
+    }
+
+    static public function cuotasPendientesDetalladoPorEstudiantePDF($idEstudiante)
+    {
+        $cuotasPendientes = Cuota::cuotasPendientesDetalladoPorEstudiante($idEstudiante);
+
+        $pdf = new TCPDF();
+        self::configurarCabeceraPDF($pdf, 'REPORTE DETALLADO DE CUOTAS PENDIENTES POR ESTUDIANTE');
+
+        $pdf->SetY(55);
+        $pdf->SetFont('helvetica', '', 11);
+        $pdf->Cell(60, 8, 'Estudiante', 1, '', "C");
+        $pdf->Cell(30, 8, 'Curso', 1, '', "C");
+        $pdf->Cell(20, 8, 'Gestión', 1, '', "C");
+        $pdf->Cell(20, 8, 'Mes', 1, '', "C");
+        $pdf->Cell(30, 8, 'Fecha Venc.', 1, '', "C");
+        $pdf->Cell(30, 8, 'Monto (Bs)', 1, '', "C");
+        $pdf->Ln();
+
+        if ($cuotasPendientes) {
+            foreach ($cuotasPendientes as $cuota) {
+                $pdf->Cell(60, 8, $cuota['estudiante'], 1);
+                $pdf->Cell(30, 8, $cuota['curso'], 1, '', 'C');
+                $pdf->Cell(20, 8, $cuota['gestion'], 1, '', 'C');
+                $pdf->Cell(20, 8, $cuota['mes'], 1, '', 'C');
+                $pdf->Cell(30, 8, date('d/m/Y', strtotime($cuota['fecha_vencimiento'])), 1, '', 'C');
+                $pdf->Cell(30, 8, number_format($cuota['monto_cuota'], 2), 1, '', 'R');
+                $pdf->Ln();
+            }
+        } else {
+            $pdf->Cell(190, 8, 'No se encontraron cuotas pendientes para este estudiante.', 0, 0, "C");
+        }
+        return $pdf->Output('', 'S');
+    }
+
+    static public function cuotasPendientesPorPeriodoPDF($fechaInicio, $fechaFin)
+    {
+        // Obtener datos de los estudiantes con cuotas pendientes en el periodo
+        $cuotasPendientes = Cuota::cuotasPendientesPorPeriodo($fechaInicio, $fechaFin);
+
+        // Crear el PDF y configurar la cabecera
+        $pdf = new TCPDF();
+        self::configurarCabeceraPDF($pdf, 'REPORTE DE DEUDORES POR PERIODO');
+
+        // Configurar tabla de encabezado
+        $pdf->SetY(55);
+        $pdf->SetFont('helvetica', '', 11);
+        $pdf->Cell(55, 8, 'Estudiante', 1, '', "C");
+        $pdf->Cell(30, 8, 'Curso', 1, '', "C");
+        $pdf->Cell(20, 8, 'Gestión', 1, '', "C");
+        $pdf->Cell(20, 8, 'Mes', 1, '', "C");
+        $pdf->Cell(30, 8, 'Fecha Venc.', 1, '', "C");
+        $pdf->Cell(30, 8, 'Monto (Bs)', 1, '', "C");
+        $pdf->Ln();
+
+
+        if ($cuotasPendientes) {
+            foreach ($cuotasPendientes as $cuota) {
+                $pdf->Cell(55, 8, $cuota['estudiante'], 1);
+                $pdf->Cell(30, 8, $cuota['curso'], 1, '', 'C');
+                $pdf->Cell(20, 8, $cuota['gestion'], 1, '', 'C');
+                $pdf->Cell(20, 8, $cuota['mes'], 1, '', 'C');
+                $pdf->Cell(30, 8, date('d/m/Y', strtotime($cuota['fecha_vencimiento'])), 1, '', 'C');
+                $pdf->Cell(30, 8, number_format($cuota['monto_cuota'], 2), 1, '', 'R');
+                $pdf->Ln();
+            }
+        } else {
+            $pdf->Cell(190, 8, 'No se encontraron cuotas pendientes en el periodo especificado.', 0, 0, "C");
+        }
         return $pdf->Output('', 'S');
     }
 }

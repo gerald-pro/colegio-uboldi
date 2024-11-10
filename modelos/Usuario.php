@@ -83,7 +83,8 @@ class Usuario{
 		if($stmt -> execute()){
 			return "ok";
 		}else{
-			return "error";	
+			$error = $stmt->errorInfo();
+			return $error[2];	
 		}
 	}
 

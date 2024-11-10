@@ -242,7 +242,7 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="verCurso">Curso</label>
-                            <select name="verCurso" id="verCurso" class="form-control" disabled>
+                            <select name="verCurso" id="verCurso" class="form-control select2" disabled>
                                 <?php
                                 $cursos = Curso::listar();
                                 foreach ($cursos as $key => $value) {
@@ -253,7 +253,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="verApoderado">Apoderado</label>
-                            <select name="verApoderado" id="verApoderado" class="form-control" disabled>
+                            <select name="verApoderado" id="verApoderado" class="form-control select2" disabled>
                                 <?php
                                 $apoderados = Apoderado::listar();
                                 foreach ($apoderados as $key => $value) {
@@ -329,7 +329,7 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="editarIdCurso">Curso</label>
-                                <select name="editarIdCurso" id="editarIdCurso" class="form-control" required>
+                                <select name="editarIdCurso" id="editarIdCurso" class="form-control select2" required>
                                     <?php
                                     $cursos = Curso::listar();
                                     foreach ($cursos as $key => $value) {
@@ -341,7 +341,7 @@
 
                             <div class="col-md-6 form-group">
                                 <label for="editarIdApoderado">Apoderado</label>
-                                <select name="editarIdApoderado" id="editarIdApoderado" class="form-control" required>
+                                <select name="editarIdApoderado" id="editarIdApoderado" class="form-control select2" required>
                                     <?php
                                     $apoderados = Apoderado::listar();
                                     foreach ($apoderados as $key => $value) {
