@@ -109,17 +109,57 @@ class Estudiante
     static public function listarConCuotasPendientes()
     {
         $stmt = Conexion::conectar()->prepare("
-            SELECT e.id, e.nombre, e.apellidos, COUNT(c.id) AS cuotas_pendientes, SUM(c.monto) AS monto_total_pendiente
+            SELECT 
+                e.id, 
+                e.nombre, 
+                e.apellidos, 
+                CONCAT(cs.nombre, ' ', cs.paralelo) AS curso,
+                COUNT(ct.id) AS cuotas_pendientes, 
+                SUM(ct.monto) AS monto_total_pendiente
             FROM estudiantes e
-            JOIN cuotas c ON NOT EXISTS (
-                SELECT 1 
-                FROM detalle_pago dp 
-                JOIN pagos p ON dp.id_pago = p.id 
-                WHERE p.id_estudiante = e.id AND dp.id_cuota = c.id
-            )
-            GROUP BY e.id, e.nombre, e.apellidos;
+            JOIN cursos cs ON e.id_curso = cs.id
+            JOIN cuotas ct ON NOT EXISTS (
+                    SELECT 1 
+                    FROM detalle_pago dp 
+                    JOIN pagos p ON dp.id_pago = p.id 
+                    WHERE p.id_estudiante = e.id AND dp.id_cuota = ct.id
+                )
+            GROUP BY 
+                e.id, 
+                e.nombre, 
+                e.apellidos, 
+                cs.nombre, 
+                cs.paralelo;
         ");
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    static public function listarConCuotasPendientesPorCurso($idCurso)
+    {
+        $stmt = Conexion::conectar()->prepare("
+        SELECT e.id, e.nombre, e.apellidos, 
+            COUNT(ct.id) AS cuotas_pendientes, SUM(ct.monto) AS monto_total_pendiente,
+            CONCAT(cs.nombre, ' ', cs.paralelo) AS curso
+        FROM estudiantes e
+        jOIN cursos cs ON e.id_curso = cs.id
+        JOIN cuotas ct ON NOT EXISTS (
+            SELECT 1 
+            FROM detalle_pago dp 
+            JOIN pagos p ON dp.id_pago = p.id 
+            WHERE p.id_estudiante = e.id AND dp.id_cuota = ct.id
+        )
+        WHERE e.id_curso = :idCurso
+        GROUP BY e.id, e.nombre, e.apellidos, cs.nombre, cs.paralelo;
+    ");
+
+        $stmt->bindParam(":idCurso", $idCurso, PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            return $stmt->fetchAll();
+        } else {
+            $error = $stmt->errorInfo();
+            return [];
+        }
     }
 }

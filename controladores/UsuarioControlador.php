@@ -2,7 +2,6 @@
 
 class UsuarioControlador
 {
-
 	/*=============================================
 		  INGRESO DE USUARIO
 		  =============================================*/
@@ -43,7 +42,7 @@ class UsuarioControlador
 
 					$fechaActual = $fecha . ' ' . $hora;
 
-					$item1 = "fecha";
+					$item1 = "fecha_ultima_sesion";
 					$valor1 = $fechaActual;
 
 					$item2 = "id";

@@ -43,7 +43,9 @@ session_start();
   <link rel="stylesheet" href="vistas/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="vistas/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="vistas/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-
+  <!-- Select2 -->
+  <link  rel="stylesheet" href="vistas/plugins/select2/css/select2.min.css">
+  <link  rel="stylesheet" href="vistas/plugins/select2-bootstrap4/select2-bootstrap4.min.css">
   <!-- fullCalendar -->
   <link rel="stylesheet" href="vistas/plugins/fullcalendar/main.css">
 
@@ -158,6 +160,10 @@ if (isset($_SESSION['iniciarSesion']) && $_SESSION['iniciarSesion'] == "ok") {
 
 ?>
 
+
+  <!-- Select2 -->
+<script src="vistas/plugins/select2/js/select2.full.min.js"></script>
+
 <script src="vistas/js/plantilla.js"></script>
 <script src="vistas/js/pagos.js"></script>
 <script src="vistas/js/usuarios.js"></script>
@@ -166,4 +172,5 @@ if (isset($_SESSION['iniciarSesion']) && $_SESSION['iniciarSesion'] == "ok") {
 <script src="vistas/js/cursos.js"></script>
 <script src="vistas/js/cuotas.js"></script>
 <script src="vistas/js/reportes.js"></script>
+
 </html>

@@ -6,7 +6,7 @@ require_once "../modelos/Estudiante.php";
 require_once "../modelos/Apoderado.php";
 require_once "../modelos/Usuario.php";
 
-if (isset($_POST["idEstudiante"])) {
+if (isset($_POST["idEstudiante"]) && isset($_POST["historialPagos"])) {
     $reporte = ReporteControlador::historialPagosEstudiante($_POST["idEstudiante"]);
 
     if ($reporte) {
@@ -105,7 +105,7 @@ if (isset($_POST["fechaInicioRegistro"]) && isset($_POST["fechaFinRegistro"])) {
 
 if (isset($_POST["idCursoEstudiantes"])) {
     $idCurso = $_POST["idCursoEstudiantes"];
-    
+
     $pdfContent = ReporteControlador::estudiantesPorCursoPDF($idCurso);
     if ($pdfContent !== false) {
         header('Content-Type: application/pdf');
@@ -118,6 +118,18 @@ if (isset($_POST["idCursoEstudiantes"])) {
 
 if (isset($_POST["estudiantesCuotasPendientes"])) {
     $pdfContent = ReporteControlador::estudiantesCuotasNoPagadasPDF();
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["estudiantesDeudoresCurso"])) {
+    
+    $pdfContent = ReporteControlador::estudiantesDeudoresPorCursoPDF($_POST["estudiantesDeudoresCurso"]);
     if ($pdfContent !== false) {
         header('Content-Type: application/pdf');
         echo $pdfContent;
@@ -152,6 +164,28 @@ if (isset($_POST["pagosPorApoderado"])) {
 
 if (isset($_POST["estudiantesMayorPago"])) {
     $pdfContent = ReporteControlador::estudiantesMayorPagoPDF();
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["idEstudiante"]) && isset($_POST["cuotasPendientes"])) {
+    $pdfContent = ReporteControlador::cuotasPendientesDetalladoPorEstudiantePDF($_POST["idEstudiante"]);
+    if ($pdfContent !== false) {
+        header('Content-Type: application/pdf');
+        echo $pdfContent;
+    } else {
+        echo "Error al generar el PDF";
+    }
+    exit;
+}
+
+if (isset($_POST["fechaInicio"]) && isset($_POST["fechaFin"]) && isset($_POST["cuotasPendientes"])) {
+    $pdfContent = ReporteControlador::cuotasPendientesPorPeriodoPDF($_POST["fechaInicio"], $_POST["fechaFin"]);
     if ($pdfContent !== false) {
         header('Content-Type: application/pdf');
         echo $pdfContent;
