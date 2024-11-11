@@ -253,7 +253,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="verApoderado">Apoderado</label>
-                            <select name="verApoderado" id="verApoderado" class="form-control select2" disabled>
+                            <select name="verIdApoderado" id="verIdApoderado" class="form-control" disabled>
                                 <?php
                                 $apoderados = Apoderado::listar();
                                 foreach ($apoderados as $key => $value) {
