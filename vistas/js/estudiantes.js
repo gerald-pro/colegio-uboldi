@@ -1,6 +1,8 @@
 /*=============================================
 MOSTRAR ESTUDIANTE
 =============================================*/
+
+
 $(".tablas").on("click", ".btnVerEstudiante", function(){
     var id = $(this).attr("id");
     console.log(id)
@@ -61,7 +63,7 @@ $(".tablas").on("click", ".btnEditarEstudiante", function(){
             $("#editarFechaNac").val(respuesta["fecha_nacimiento"]);
             $("#editarIdCurso").val(respuesta["id_curso"]);
             $("#editarParalelo").val(respuesta["paralelo"]);
-            $("#editarIdApoderado").val(respuesta["id_apoderado"]);
+            $("#editarIdApoderado").val(respuesta["id_apoderado"]).trigger("change");
             $("#idEstudiante").val(respuesta["id"]);
         },
         error: function (jqXHR, textStatus, errorThrown) {
