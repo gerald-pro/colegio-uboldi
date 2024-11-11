@@ -24,7 +24,7 @@ $(".tablas").on("click", ".btnEditarCuota", function () {
             $("#editarFechaVencimiento").val(respuesta["fecha_vencimiento"]);
             $("#editarMonto").val(respuesta["monto"]);
             $("#editarGestion").val(respuesta["gestion"]);
-            $("#editarMes").val(respuesta["mes"]);
+            $("#editarMes").val(respuesta["mes"]).trigger("change");
             $("#editarId").val(respuesta["id"]);
         },
         error: function (jqXHR, textStatus, errorThrown) {

@@ -196,7 +196,6 @@
                 <label for="editarMes">Mes</label>
 
                 <select name="editarMes" id="editarMes" class="form-control select2" required>
-                  <option value="">Seleccionar</option>
                   <option value="1">Enero</option>
                   <option value="2">Febrero</option>
                   <option value="3">Marzo</option>
