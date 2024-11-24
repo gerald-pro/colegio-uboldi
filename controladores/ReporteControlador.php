@@ -553,26 +553,42 @@ class ReporteControlador
         $pdf = new TCPDF();
         self::configurarCabeceraPDF($pdf, 'REPORTE DE DEUDORES POR PERIODO');
 
+        $pdf->SetFont('helvetica', '', 11);
+        $pdf->SetY(45);
+        $pdf->Cell(0, 6, 'Período: ' . date("d/m/Y", strtotime($fechaInicio)) . ' - ' . date("d/m/Y", strtotime($fechaFin)), 0, 1);
         // Configurar tabla de encabezado
         $pdf->SetY(55);
-        $pdf->SetFont('helvetica', '', 11);
+
         $pdf->Cell(55, 8, 'Estudiante', 1, '', "C");
         $pdf->Cell(30, 8, 'Curso', 1, '', "C");
-        $pdf->Cell(20, 8, 'Gestión', 1, '', "C");
-        $pdf->Cell(20, 8, 'Mes', 1, '', "C");
+        $pdf->Cell(35, 8, 'Mes', 1, '', "C");
         $pdf->Cell(30, 8, 'Fecha Venc.', 1, '', "C");
-        $pdf->Cell(30, 8, 'Monto (Bs)', 1, '', "C");
+        $pdf->Cell(28, 8, 'Monto (Bs)', 1, '', "C");
         $pdf->Ln();
 
+        $meses = [
+            1 => 'Enero',
+            2 => 'Febrero',
+            3 => 'Marzo',
+            4 => 'Abril',
+            5 => 'Mayo',
+            6 => 'Junio',
+            7 => 'Julio',
+            8 => 'Agosto',
+            9 => 'Septiembre',
+            10 => 'Octubre',
+            11 => 'Noviembre',
+            12 => 'Diciembre'
+        ];
 
         if ($cuotasPendientes) {
             foreach ($cuotasPendientes as $cuota) {
                 $pdf->Cell(55, 8, $cuota['estudiante'], 1);
                 $pdf->Cell(30, 8, $cuota['curso'], 1, '', 'C');
-                $pdf->Cell(20, 8, $cuota['gestion'], 1, '', 'C');
-                $pdf->Cell(20, 8, $cuota['mes'], 1, '', 'C');
+                $nombreMes = $meses[(int)$cuota['mes']];
+                $pdf->Cell(35, 8, $nombreMes, 1, '', 'C');
                 $pdf->Cell(30, 8, date('d/m/Y', strtotime($cuota['fecha_vencimiento'])), 1, '', 'C');
-                $pdf->Cell(30, 8, number_format($cuota['monto_cuota'], 2), 1, '', 'R');
+                $pdf->Cell(28, 8, number_format($cuota['monto_cuota'], 2), 1, '', 'R');
                 $pdf->Ln();
             }
         } else {

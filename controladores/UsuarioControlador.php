@@ -23,6 +23,7 @@ class UsuarioControlador
 				$valor = $_POST["ingUsuario"];
 
 				$respuesta = Usuario::listar($item, $valor);
+				$rol = Usuario::obtenerRol($respuesta['id']);
 
 				if ($respuesta["usuario"] == $_POST["ingUsuario"] && $respuesta["password"] == $encriptar) {
 					$_SESSION["iniciarSesion"] = "ok";
@@ -30,25 +31,22 @@ class UsuarioControlador
 					$_SESSION["correo"] = $respuesta["correo"];
 					$_SESSION["fecha_registro"] = $respuesta["fecha_registro"];
 					$_SESSION["usuario"] = $respuesta["usuario"];
+					$_SESSION['rol'] = $rol;
 
 					/*=============================================
 													 REGISTRAR FECHA PARA SABER EL ÚLTIMO LOGIN
 													 =============================================*/
 
-					date_default_timezone_set('America/Bogota');
+					date_default_timezone_set('America/La_Paz');
 
 					$fecha = date('Y-m-d');
 					$hora = date('H:i:s');
 
 					$fechaActual = $fecha . ' ' . $hora;
 
-					$item1 = "fecha_ultima_sesion";
-					$valor1 = $fechaActual;
+					$idUsuario = $respuesta["id"];
 
-					$item2 = "id";
-					$valor2 = $respuesta["id"];
-
-					$ultimoLogin = Usuario::mdlActualizarUsuario($tabla, $item1, $valor1, $item2, $valor2);
+					$ultimoLogin = Usuario::mdlActualizarUsuario($idUsuario, $fechaActual);
 
 					if ($ultimoLogin == "ok") {
 
@@ -122,6 +120,7 @@ class UsuarioControlador
 						"correo" => $_POST["NuevoCorreo"],
 						"fecha_registro" => $_POST["NuevaFecha"],
 						"password" => $_POST["NuevaPassword"],
+						"id_rol" => $_POST["NuevoRol"],
 					);
 
 					$respuesta = Usuario::mdlIngresarUsuario($datos);
@@ -189,14 +188,15 @@ class UsuarioControlador
 
 			// Verificar si hay errores.
 			if (empty($errores)) {
-				$tabla = "usuarios";
 				$datos = array(
+					"id" => $_POST["idUsuario"],
 					"usuario" => $_POST["EditarUsuario"],
 					"correo" => $_POST["EditarCorreo"],
 					"fecha_registro" => $_POST["EditarFecha"],
+					"id_rol" => $_POST["EditarRol"],
 				);
 
-				$respuesta = Usuario::mdlEditarUsuario($tabla, $datos);
+				$respuesta = Usuario::mdlEditarUsuario($datos);
 
 				if ($respuesta == "ok") {
 					$mensaje = Mensaje::obtenerMensaje(

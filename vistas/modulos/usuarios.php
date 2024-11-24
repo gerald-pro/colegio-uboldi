@@ -37,7 +37,7 @@
             <div class="card-body">
 
                 <table class="table table-bordered table-hover dataTable dtr-inline tablas" aria-describedby="example2_info">
-                    
+
                     <thead>
                         <tr>
                             <th class="sorting sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Motor de renderizado: actívelo para ordenar las columnas de forma descendente">
@@ -46,7 +46,7 @@
                                 </font>
                             </th>
 
-                           
+
                             <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Versión del motor: activar para ordenar columnas de forma ascendente">
                                 <font style="vertical-align: inherit;">
                                     <font style="vertical-align: inherit;">Usuario</font>
@@ -83,7 +83,7 @@
 
                         foreach ($usuarios as $key => $value) {
                             $fechaOriginal = $value["fecha_registro"];
-                            
+
                             echo ' <tr>
                             <td>' . ($key + 1) . '</td>
                             <td>' . $value["usuario"] . '</td>
@@ -133,7 +133,7 @@
                     <div class="form-group">
                         <label for="exampleInputEmail1">
                             <font style="vertical-align: inherit;">
-                                <font style="vertical-align: inherit;">usuario</font>
+                                <font style="vertical-align: inherit;">Usuario</font>
                             </font>
                         </label>
                         <input type="text" class="form-control" id="NuevoUsuario" name="NuevoUsuario" placeholder="Ingrese usuario" required>
@@ -150,7 +150,7 @@
                     <div class="form-group">
                         <label for="exampleInputEmail1">
                             <font style="vertical-align: inherit;">
-                                <font style="vertical-align: inherit;">correo</font>
+                                <font style="vertical-align: inherit;">Correo</font>
                             </font>
                         </label>
                         <input type="email" class="form-control" id="NuevoCorreo" name="NuevoCorreo" placeholder="Ingrese correo" required>
@@ -159,14 +159,27 @@
                     <div class="form-group">
                         <label for="exampleInputEmail1">
                             <font style="vertical-align: inherit;">
-                                <font style="vertical-align: inherit;">fecha</font>
+                                <font style="vertical-align: inherit;">Fecha</font>
                             </font>
                         </label>
                         <input type="date" class="form-control" id="NuevaFecha" name="NuevaFecha" placeholder="Ingrese Password" required>
                     </div>
 
-                   
-
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">Rol</font>
+                            </font>
+                        </label>
+                        <select name="NuevoRol" id="NuevoRol" class="form-control" required>
+                            <?php
+                            $roles = Rol::listar();
+                            foreach ($roles as $key => $value) {
+                                echo '<option value="' . $value["id"] . '">' . $value["nombre"] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-outline-light" data-dismiss="modal">Cerrar</button>
@@ -174,10 +187,8 @@
                 </div>
 
                 <?php
-
-               $crearUsuarios = new UsuarioControlador();
+                $crearUsuarios = new UsuarioControlador();
                 $crearUsuarios->ctrCrearUsuario();
-
                 ?>
 
             </form>
@@ -209,6 +220,7 @@
                             </font>
                         </label>
                         <input type="text" class="form-control" id="EditarUsuario" name="EditarUsuario" placeholder="Ingrese usuario" value="" readonly>
+                        <input type="hidden" name="idUsuario" id="idUsuario" required>
                     </div>
 
                     <div class="form-group">
@@ -227,6 +239,22 @@
                             </font>
                         </label>
                         <input type="date" class="form-control" id="EditarFecha" name="EditarFecha" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">Rol</font>
+                            </font>
+                        </label>
+                        <select name="EditarRol" id="EditarRol" class="form-control" required>
+                            <?php
+                            $roles = Rol::listar();
+                            foreach ($roles as $key => $value) {
+                                echo '<option value="' . $value["id"] . '">' . $value["nombre"] . '</option>';
+                            }
+                            ?>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">

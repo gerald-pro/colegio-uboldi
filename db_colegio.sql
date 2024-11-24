@@ -3,6 +3,12 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 
+CREATE TABLE roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 -- Tabla: usuarios
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -10,7 +16,9 @@ CREATE TABLE usuarios (
     correo VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(300) NOT NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    fecha_ultima_sesion TIMESTAMP NULL
+    fecha_ultima_sesion TIMESTAMP NULL,
+    id_rol INT NOT NULL,
+    FOREIGN KEY (id_rol) REFERENCES roles(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Tabla: apoderados
@@ -94,14 +102,16 @@ CREATE TABLE detalle_pago (
 
 
 
-INSERT INTO `usuarios` (`id`, `usuario`, `correo`, `password`) VALUES
-(2, 'luis', 'luis@gmail.commm', ''),
-(3, 'jose', 'jose@gmail.com', '123'),
-(4, 'admin', 'admin@gmail.com', '123'),
-(5, 'marcos', 'marcos@gmail.com', '123'),
-(6, 'angel', 'angel@gmail.com', '123'),
-(7, 'andres', 'andres@gmail.com', '123'),
-(8, 'luisa', 'luisa@gmail.com', '123');
+INSERT INTO roles (nombre) VALUES ('administradora'), ('contadora'), ('secretaria');
+
+INSERT INTO `usuarios` (`id`, `usuario`, `correo`, `password`, id_rol) VALUES
+(2, 'luis', 'luis@gmail.commm', '', 1),
+(3, 'jose', 'jose@gmail.com', '123', 1),
+(4, 'admin', 'admin@gmail.com', '123', 1),
+(5, 'marcos', 'marcos@gmail.com', '123', 1),
+(6, 'angel', 'angel@gmail.com', '123', 1),
+(7, 'andres', 'andres@gmail.com', '123', 1),
+(8, 'luisa', 'luisa@gmail.com', '123', 1);
 
 
 INSERT INTO `apoderados` (`id`, `nombre`, `apellido`, `direccion`, `telefono`, `id_usuario`) VALUES

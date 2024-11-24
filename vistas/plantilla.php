@@ -44,8 +44,8 @@ session_start();
   <link rel="stylesheet" href="vistas/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="vistas/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <!-- Select2 -->
-  <link  rel="stylesheet" href="vistas/plugins/select2/css/select2.min.css">
-  <link  rel="stylesheet" href="vistas/plugins/select2-bootstrap4/select2-bootstrap4.min.css">
+  <link rel="stylesheet" href="vistas/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="vistas/plugins/select2-bootstrap4/select2-bootstrap4.min.css">
   <!-- fullCalendar -->
   <link rel="stylesheet" href="vistas/plugins/fullcalendar/main.css">
 
@@ -127,25 +127,30 @@ if (isset($_SESSION['iniciarSesion']) && $_SESSION['iniciarSesion'] == "ok") {
   include "modulos/cabezote.php";
   include "modulos/menu.php";
 
+  $permiso = [
+    'administradora' => ['inicio', 'apoderados', 'cursos', 'usuarios', 'cuotas', 'estudiantes', 'pagos', 'reportes', 'ingreso',  'salir'],
+    'contadora' => ['inicio', 'apoderados', 'cursos', 'cuotas', 'estudiantes', 'pagos', 'ingreso',  'salir'],
+    'secretaria' => ['inicio', 'reportes', 'ingreso', 'salir']
+  ];
+
 
   if (isset($_GET["rutas"])) {
+    $rutaSolicitada = $_GET["rutas"];
+    $rolUsuario = $_SESSION['rol'] ?? null;
 
-    if (
-      $_GET["rutas"] == "inicio" ||
-      $_GET["rutas"] == "apoderados" ||
-      $_GET["rutas"] == "cursos" ||
-      $_GET["rutas"] == "usuarios" ||
-      $_GET["rutas"] == "cuotas" ||
-      $_GET["rutas"] == "estudiantes" ||
-      $_GET["rutas"] == "pagos" ||
-      $_GET["rutas"] == "reportes" ||
-      $_GET["rutas"] == "salir"
-    ) {
-      include "modulos/" . $_GET["rutas"] . ".php";
+    if (isset($permiso[$rolUsuario]) && in_array($rutaSolicitada, $permiso[$rolUsuario])) {
+      // Verificar si la ruta solicitada existe en el sistema
+      $archivoRuta = "vistas/modulos/" . $rutaSolicitada . ".php";
+      if (file_exists($archivoRuta)) {
+        include $archivoRuta;
+      } else {
+        include "modulos/404.php";
+      }
     } else {
-      include "modulos/404.php";
+      include "modulos/403.php";
     }
   } else {
+    // Si no se pasa ninguna ruta, se carga la ruta por defecto "inicio"
     include "modulos/inicio.php";
   }
 
@@ -161,7 +166,7 @@ if (isset($_SESSION['iniciarSesion']) && $_SESSION['iniciarSesion'] == "ok") {
 ?>
 
 
-  <!-- Select2 -->
+<!-- Select2 -->
 <script src="vistas/plugins/select2/js/select2.full.min.js"></script>
 
 <script src="vistas/js/plantilla.js"></script>

@@ -266,11 +266,11 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="verFechaReg">Fecha de registro</label>
-                            <input type="date" class="form-control" id="verFechaReg" name="verFechaReg" readonly>
+                            <input type="datetime" class="form-control" id="verFechaReg" name="verFechaReg" readonly>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="verfechaAct">Fecha de actualizacion</label>
-                            <input type="datetime" class="form-control" id="verfechaAct" name="verfechaAct" readonly>
+                            <input type="datetime" class="form-control" id="verFechaAct" name="verFechaAct" readonly>
                         </div>
                     </div>
                 </div>

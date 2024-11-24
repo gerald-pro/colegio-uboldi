@@ -19,10 +19,11 @@ $(".tablas").on("click", ".btnEditarUsuario", function () {
 		dataType: "json",
 		success: function (respuesta) {
 			console.log(respuesta);
-			
+			$("#idUsuario").val(respuesta["id"]);
 			$("#EditarUsuario").val(respuesta["usuario"]);
 			$("#EditarFecha").val(respuesta.fecha_registro.split(" ")[0]);
 			$("#EditarCorreo").val(respuesta["correo"]);
+			$("#EditarRol").val(respuesta["id_rol"]);
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
 			console.error("Error en la solicitud AJAX: ", textStatus, errorThrown);
