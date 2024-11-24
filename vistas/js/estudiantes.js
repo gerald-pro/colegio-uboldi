@@ -18,13 +18,15 @@ $(".tablas").on("click", ".btnVerEstudiante", function(){
         processData: false,
         dataType: "json",
         success: function(respuesta){
+            console.log(respuesta);
+            
             $("#verNombre").val(respuesta["nombre"]);
             $("#verApellido").val(respuesta["apellidos"]);
             $("#verCorreo").val(respuesta["correo"]);
             $("#verDireccion").val(respuesta["direccion"]);
             $("#verTelefono").val(respuesta["telefono"]);
             $("#verFechaNac").val(respuesta["fecha_nacimiento"]);
-            $("#verfechaAct").val(respuesta["fecha_actualizacion"]);
+            $("#verFechaAct").val(respuesta["fecha_actualizacion"]);
             $("#verFechaReg").val(respuesta["fecha_registro"]);
             $("#verIdCurso").val(respuesta["id_curso"]);
             $("#verParalelo").val(respuesta["paralelo"]);
