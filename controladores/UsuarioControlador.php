@@ -45,16 +45,19 @@ class UsuarioControlador
 					$fechaActual = $fecha . ' ' . $hora;
 
 					$idUsuario = $respuesta["id"];
-
 					$ultimoLogin = Usuario::mdlActualizarUsuario($idUsuario, $fechaActual);
 
 					if ($ultimoLogin == "ok") {
+						$redireccion = match ($rol) {
+							'administradora' => 'usuarios',
+							'contadora' => 'apoderados',
+							'secretaria' => 'reportes', 
+							default => 'inicio' 
+						};
 
 						echo '<script>
-
-								window.location = "inicio";
-
-							</script>';
+							window.location = "' . $redireccion . '";
+						</script>';
 					}
 				} else {
 					echo '<br><div class="alert alert-danger">Error al ingresar, vuelve a intentarlo</div>';
@@ -113,7 +116,6 @@ class UsuarioControlador
 						$error,
 						"usuarios"
 					);
-					
 				} else {
 					$datos = array(
 						"usuario" => $_POST["NuevoUsuario"],
